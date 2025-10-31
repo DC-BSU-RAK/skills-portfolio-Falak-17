@@ -86,7 +86,7 @@ def start_screen():
     instruction_btn.place(relx=0.1, rely=0.07, anchor="center")
 
     # Exit button
-    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Quit button.png")
+    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
     exit_btn = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
@@ -155,7 +155,7 @@ def menu():
     footer.place(relx=0.5, rely=0.9, anchor="center")
 
     # Exit Game Button 
-    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Quit button.png")
+    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
     question_button = Button(main_frame, image=exit_photo, bg="#101025", activebackground="#101025",borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
@@ -185,7 +185,7 @@ def start(level):
     elif level == 2:
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\orange background.jpg"
     elif level == 3:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\red background.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Red background.jpg"
     next_question()
 
 
@@ -268,11 +268,11 @@ def show_q():
 
     # Submit Button
     submit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\enter button.png")
-    submit_img = submit_img.resize((120, 70))
+    submit_img = submit_img.resize((140, 90))
     submit_photo = ImageTk.PhotoImage(submit_img)
-    sub_button = Button(f, image=submit_photo, bg="#4bb440",activebackground="#39962e", borderwidth=0,highlightthickness=0, cursor="hand2", command=check)
+    sub_button = Button(f, image=submit_photo, bg="#000000",activebackground="#000000", borderwidth=0,highlightthickness=0, cursor="hand2", command=check)
     sub_button.image = submit_photo
-    sub_button.pack(pady=15)
+    sub_button.pack(pady=10)
 
     # Warnings and streak message
     if game['chances'] == 1:
@@ -283,12 +283,25 @@ def show_q():
         streak_record.pack(pady=5)
 
     # Quit Button
-    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
-    quit_img = quit_img.resize((40, 40))
+    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button.png")
+    quit_img = quit_img.resize((50, 50))
     quit_photo = ImageTk.PhotoImage(quit_img)
     quit_button = Button(f, image=quit_photo, bg="#121111",activebackground="#121111", borderwidth=0,highlightthickness=0, cursor="hand2", command=confirm_exit)
     quit_button.image = quit_photo
-    quit_button.place(relx=0.045, rely=0.95, anchor="center")
+    quit_button.place(relx=0.95, rely=0.95, anchor="center")
+
+    return_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\return button.png")
+    return_img = return_img.resize((50, 50))
+    return_photo = ImageTk.PhotoImage(return_img)
+    return_button = Button(f, image=return_photo, bg="#121111", activebackground="#121111",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: confirm_return())
+    return_button.image = return_photo
+    return_button.place(relx=0.055, rely=0.95, anchor="center")
+
+
+def confirm_return():
+    answer = messagebox.askyesno("Return to Menu", "Are you sure you want to return?\nYour progress will be lost!")
+    if answer:
+        menu()    
 
 
 def check():
