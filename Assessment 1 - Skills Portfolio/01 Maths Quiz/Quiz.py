@@ -2,10 +2,14 @@ from tkinter import*
 from tkinter import messagebox
 from PIL import Image, ImageTk, ImageSequence
 import random
+import time
 
-# Store all game data in dictionary
-game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3 }
 
+# Store all game data in dictionary - ADDED 'question_start_time'
+game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0 }
+
+
+# Main Window
 def main():
     game['root'] = Tk()
     game['root'].title(" Monster Math: Test Your Fear of Numbers!")
@@ -15,25 +19,35 @@ def main():
     start_screen()
     game['root'].mainloop()
 
+
+# Clear all widgets from the screen
 def clear_screen():
     for widget in game['root'].winfo_children():
         widget.destroy()
 
+
+# Confirm Exit
 def confirm_exit():
-    answer = messagebox.askyesno("Quit", "Are you sure you want to quit?\nYour progress will be lost!")
+    answer = messagebox.askyesno("Quit", "Are you sure you want to quit?")
     if answer:
         game['root'].quit()
 
+
+# Button hover effects
 def hover(btn, color): 
     btn.config(bg=color)
 
+
+# Button leave effects
 def leave(btn, color): 
     btn.config(bg=color)
 
-#   Start Window
+
+# Start Window
 def start_screen():
     clear_screen()
     
+    # Start window's Frame 
     start_frame = Frame(game['root'])
     start_frame.pack(fill=BOTH, expand=True)
 
@@ -51,9 +65,15 @@ def start_screen():
     start_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Play button.png") 
     start_img = start_img.resize((220, 90))
     start_photo = ImageTk.PhotoImage(start_img)
-    start_btn = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
-    start_btn.image = start_photo
-    start_btn.place(relx=0.5, rely=0.9, anchor="center")  
+    start_button = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
+    start_button.image = start_photo
+    start_button.place(relx=0.5, rely=0.9, anchor="center")
+
+    # Bounce Animation for Start Button (TAKEN FROM GPT) 
+    def bounce(widget, y=0, direction=1):
+      widget.place_configure(rely=0.85 + y/100)
+      game['root'].after(350, lambda: bounce(widget, y + direction*2, -direction if abs(y) > 5 else direction))
+    bounce(start_button)
 
     # Instructions Window
     def show_instructions():
@@ -70,7 +90,7 @@ def start_screen():
         bg_label.image = instruction_photo
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\instructions.png") 
+        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Instructions.png") 
         instruction_label_img = instruction_label_img.resize((400, 550))
         instruction_label_photo = ImageTk.PhotoImage(instruction_label_img)
         instruction_label = Label(instruction_window, image=instruction_label_photo)
@@ -81,17 +101,17 @@ def start_screen():
     instruction_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Instructions button.png")
     instruction_img = instruction_img.resize((130, 40))
     instruction_photo = ImageTk.PhotoImage(instruction_img)
-    instruction_btn = Button( start_frame, image=instruction_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2",command=show_instructions)
-    instruction_btn.image = instruction_photo
-    instruction_btn.place(relx=0.1, rely=0.07, anchor="center")
+    instruction_button = Button( start_frame, image=instruction_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2",command=show_instructions)
+    instruction_button.image = instruction_photo
+    instruction_button.place(relx=0.1, rely=0.07, anchor="center")
 
     # Exit button
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
-    exit_btn = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
-    exit_btn.image = exit_photo
-    exit_btn.place(relx=0.93, rely=0.07, anchor="center")
+    exit_button = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
+    exit_button.image = exit_photo
+    exit_button.place(relx=0.93, rely=0.07, anchor="center")
 
 
 # Menu Window
@@ -111,7 +131,7 @@ def menu():
         game['root'].after(50, animate,(index + 1) % len(frames)) 
     animate() 
 
-
+    # Titles for the Menu Screen
     l1 = Label(main_frame, text="Monster Math Madness!", font=("Roboto", 24, "italic"), fg="#ffd700", bg="#270B44")
     l1.place(relx=0.5, rely=0.05, anchor="center")
     box = Frame(main_frame, bg="#240B3F", bd=3, relief=RIDGE)
@@ -133,7 +153,6 @@ def menu():
     easy_button = Button(buttons, image=easy_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(1))
     easy_button.image = easy_img
     easy_button.pack(pady=5)
-
     # Medium Button
     img2 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Medium button.png") 
     img2 = img2.resize((190, 80))
@@ -141,7 +160,6 @@ def menu():
     medium_button = Button(buttons, image=medium_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(2))
     medium_button.image = medium_img
     medium_button.pack(pady=5)
-
     # Hard Button 
     img3 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Hard button.png") 
     img3 = img3.resize((190, 80))
@@ -150,10 +168,9 @@ def menu():
     hard_button.image = hard_img
     hard_button.pack(pady=5)
 
-    # Footer Info
-    footer = Label(main_frame, text="10 Questions • 2 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
+    # Footer Information
+    footer = Label(main_frame, text="10 Questions • 3 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
     footer.place(relx=0.5, rely=0.9, anchor="center")
-
     # Exit Game Button 
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
@@ -163,6 +180,7 @@ def menu():
     question_button.place(relx=0.93, rely=0.07, anchor="center")
 
 
+# Generate random numbers based on difficulty level
 def random_nums():
     level = game['level']
     if level == 1: 
@@ -171,81 +189,104 @@ def random_nums():
         return random.randint(10, 99), random.randint(10, 99)
     return random.randint(1000, 9999), random.randint(1000, 9999)
 
-def start(level):
-    game.update({
-        'level': level,
-        'question_num': 0,
-        'score': 0,
-        'streak': 0,
-        'chances': 0,
-         'lives': 3  })
 
+# Start the quiz - ADDED time_taken and question_start_time initialization
+def start(level):
+    game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0})
+
+    # Set background and time limit based on level
     if level == 1:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\green background 1.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Green background.jpg"
+        game['time_limit'] = 10
     elif level == 2:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\orange background.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Orange background.jpg"
+        game['time_limit'] = 20
     elif level == 3:
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Red background.jpg"
+        game['time_limit'] = 30
     next_question()
 
 
+# Load the next question - ADDED recording start time
 def next_question():
     if game['question_num'] >= 10 or game['lives'] <= 0:
         results()
         return
 
+    # Update question number and reset parameters
     game['question_num'] += 1
     game['chances'] = 2
+    game['countdown'] = game['time_limit']
+    game['timer_running'] = True
     game['num1'], game['num2'] = random_nums()
     game['operator'] = random.choice(['+', '-'])
     game['ans'] = game['num1'] + game['num2'] if game['operator'] == '+' else game['num1'] - game['num2']
+    game['question_start_time'] = time.time()  # ADDED: Record start time
     show_q()
 
 
+# Display the question screen
 def show_q():
     clear_screen()
 
+    # Question screen's Frame
     f = Frame(game['root'])
     f.pack(fill="both", expand=True)
 
+    # Background Image
     bg_file = game['bg']
     img = Image.open(bg_file)
-    frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750)))
-              for frame in ImageSequence.Iterator(img)]
-
-    bg_label = Label(f)
+    img = img.resize((800, 750))
+    bg_photo = ImageTk.PhotoImage(img)
+    bg_label = Label(f, image=bg_photo)
+    bg_label.image = bg_photo
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    def animate(index=0):
-        bg_label.config(image=frames[index])
-        game['root'].after(40, animate, (index + 1) % len(frames))
-    animate()
-
-    # Top Bar
+    # Top Bar that displays question number, score, lives and timer
     top = Frame(f, bg="#16213e", height=60)
     top.pack(fill=X)
-    # Question number
-    l3 = Label(top, text=f"Q {game['question_num']} of 10",font=("Arial", 14, "bold"), fg="#8db3b9", bg="#16213e")
-    l3.pack(side=LEFT, padx=30)
-    # Score display
-    l4 = Label(top, text=f"⭐ Score: {game['score']}/100",font=("Arial", 14, "bold"), fg="#ffd700", bg="#16213e")
-    l4.pack(side=RIGHT, padx=30)
+    question_num_display = Label(top, text=f"Q {game['question_num']} of 10",font=("Arial", 14, "bold"), fg="#8db3b9", bg="#16213e")
+    question_num_display.pack(side=LEFT, padx=30)
+    score_display = Label(top, text=f"⭐ Score: {game['score']}/100",font=("Arial", 14, "bold"), fg="#ffd700", bg="#16213e")
+    score_display.pack(side=RIGHT, padx=30)
 
+    # Lives display using heart emojis
     lives_display = ""
     for i in range(3):
         if i < game['lives']:
-            lives_display += "❤️ "
+            lives_display += "❤️"
         else:
-            lives_display += "🤍 "
+            lives_display += "🤍"
     lives_label = Label(top, text=f"Lives: {lives_display}",font=("Arial", 14, "bold"), fg="#ff4757", bg="#16213e")
     lives_label.pack(side=RIGHT, padx=30)
-
-    # Progress Bar
+    
+    # Timer display - ADDED time tracking when timer runs out
+    time_widget = Label(top, text=f"⏱ {game['countdown']}s",font=('Arial', 16, 'bold'), fg='#3498db', bg='#16213e')
+    time_widget.pack(side=RIGHT, padx=15)
+    def tick_timer():
+        if game['timer_running'] and game['countdown'] > 0:
+            game['countdown'] -= 1
+            time_widget.config(text=f"⏱ {game['countdown']}s")
+            game['root'].after(1000, tick_timer)
+        elif game['countdown'] <= 0 and game['timer_running']:
+            game['timer_running'] = False
+            elapsed = time.time() - game['question_start_time']  # ADDED: Calculate time taken
+            game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
+            game['lives'] -= 1
+            if game['lives'] <= 0:
+                messagebox.showerror("Time's Up!", f"⏰ Time ran out!\n💀 No lives left!\nFinal Score: {game['score']}/100")
+                results()
+            else:
+                messagebox.showwarning("Time's Up!", f"⏰ Time ran out!\nCorrect answer: {game['ans']}\n💔 You lost one life.\nLives left: {game['lives']}")
+                next_question()
+    tick_timer()
+    
+    # Progress Bar that shows how many questions have been answered
     c = Canvas(f, width=500, height=20, bg="#1a1a2e", highlightthickness=0)
     c.pack(pady=10)
-    c.create_rectangle(0, 0, 500, 20, fill="#16213e", outline="")
-    c.create_rectangle(0, 0, ((game['question_num'] - 1) / 10) * 500, 20, fill="#00ff88", outline="")
-
+    c.create_rectangle(0, 0, 500, 20, outline="#00ff88", width=2)
+    c.create_rectangle(0, 0, ((game['question_num'] - 1) / 10) * 500, 20, fill="#3498db", outline="")
+    
     # Question Display background
     question_display = Frame(f, bg="#000000", bd=0)
     question_display.pack(pady=(120, 20))
@@ -257,7 +298,7 @@ def show_q():
     second_num = Label(question_display, text=f"  {game['num2']}  =",font=("Arial", 42, "bold"), fg="white", bg="#000000")
     second_num.pack(side=LEFT)
 
-    # Entry Field
+    # Entry Field for user to input an answer
     e1 = Frame(f, bg="#000000")
     e1.pack(pady=20)
     l5 = Label(e1, text="Your Answer:",font=("Arial", 14, "bold"), fg="#ffffff", bg="#000000")
@@ -265,6 +306,7 @@ def show_q():
     game['entry'] = Entry(e1, font=("Arial", 28, "bold"), width=10, justify='center', bg="#16213e", fg="white",insertbackground="#ffffff", relief=SOLID, bd=2)
     game['entry'].pack(pady=10)
     game['entry'].focus()
+    game['entry'].bind('<Return>', lambda event: check())
 
     # Submit Button
     submit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\enter button.png")
@@ -278,6 +320,7 @@ def show_q():
     if game['chances'] == 1:
         warning = Label(f, text="⚠️ Second Attempt - 5 Points",font=("Arial", 12, "bold"), fg="#ffaa00", bg="#000000")
         warning.pack(pady=5)
+    
     if game['streak'] >= 3:
         streak_record = Label(f, text=f"🔥 {game['streak']} Question Streak! 🔥",font=("Arial", 12, "bold"), fg="#ff6b00", bg="#000000")
         streak_record.pack(pady=5)
@@ -290,6 +333,7 @@ def show_q():
     quit_button.image = quit_photo
     quit_button.place(relx=0.95, rely=0.95, anchor="center")
 
+    # Return button to go back to Menu screen
     return_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\return button.png")
     return_img = return_img.resize((50, 50))
     return_photo = ImageTk.PhotoImage(return_img)
@@ -298,108 +342,183 @@ def show_q():
     return_button.place(relx=0.055, rely=0.95, anchor="center")
 
 
+# Confirm Return to Menu
 def confirm_return():
+    game['timer_running'] = False
     answer = messagebox.askyesno("Return to Menu", "Are you sure you want to return?\nYour progress will be lost!")
     if answer:
         menu()    
+    else:
+        game['timer_running'] = True
 
 
+# Function to check and display message if the entry field is empty or invalid
 def check():
     try:
         ans = int(game['entry'].get())
+        game['timer_running'] = False
         check_ans(ans)
     except ValueError:
         messagebox.showerror("Invalid", "Please enter a valid number!")
         game['entry'].delete(0, END)
  
 
+# Function to check the user's answer - ADDED time tracking
 def check_ans(user):
+    elapsed = time.time() - game['question_start_time']  # ADDED: Calculate elapsed time
+    
     if user == game['ans']:
+        game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
         if game['chances'] == 2:
             game['score'] += 10
             game['streak'] += 1
-            messagebox.showinfo("Correct", f"🎉 Correct!\n⭐ You earned 10 points!\nTotal Score: {game['score']}/100")
         else:
             game['score'] += 5
             game['streak'] = 0
-            messagebox.showinfo("Correct", f"👍 You earned 5 points!\n⭐ Score: {game['score']}/100")
-
         next_question()
-
     else:
         game['chances'] -= 1
         game['streak'] = 0
-
         if game['chances'] > 0:
-            messagebox.showwarning("Incorrect", "❌ Wrong! Try again.\n🔄 One more attempt (worth 5 points).")
+            game['timer_running'] = False
+            messagebox.showwarning("Incorrect", "❌ Wrong! Try again.")
+            game['timer_running'] = True
             show_q()
         else:
+            game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
             game['lives'] -= 1
-
             if game['lives'] <= 0:
                 messagebox.showerror("Game Over", f"💀 No lives left!\nFinal Score: {game['score']}/100")
                 results()
                 return
             else:
-                messagebox.showwarning("Incorrect", f"❌ Correct answer: {game['ans']}\n💔 You lost one life.\nLives left: {game['lives']}")
+                messagebox.showwarning("Incorrect", f"❌ Correct answer: {game['ans']}\nLives left: {game['lives']}")
                 next_question()
 
 
+# Display the results screen
 def results():
+    game['timer_running'] = False
     clear_screen()
+
     score = game['score']
-    if score >= 90: 
-        grade, color, emo, msgg = "A+", "#00ff88", "🏆", "OUTSTANDING!"
-    elif score >= 80: 
-        grade, color, emo, msgg = "A", "#00d4ff", "🌟", "EXCELLENT!"
-    elif score >= 70: 
-        grade, color, emo, msgg = "B", "#ffaa00", "😊", "GOOD JOB!"
-    elif score >= 60: 
-        grade, color, emo, msgg = "C", "#ff9500", "📚", "NOT BAD!"
-    else: 
-        grade, color, emo, msgg = "F", "#ff4757", "💪", "KEEP PRACTICING!"
+    if score >= 90:
+        grade, msgg = "A+", "OUTSTANDING!"
+    elif score >= 80:
+        grade, msgg = "A", "EXCELLENT!"
+    elif score >= 70:
+        grade, msgg = "B", "GOOD JOB!"
+    elif score >= 60:
+        grade, msgg = "C", "NOT BAD!"
+    else:
+        grade, msgg = "F", "KEEP PRACTICING!"
 
-    f = Frame(game['root'], bg="#1a1a2e")
-    f.pack(fill=BOTH, expand=True)
-    l6 = Label(f, text=f"{emo} QUIZ COMPLETE! {emo}", font=("Arial", 28, "bold"), fg="#ffd700", bg="#1a1a2e")
-    l6.pack(pady=30)
-    card = Frame(f, bg="#2d3561", relief=RAISED, bd=5)
-    card.pack(pady=20, padx=80, fill=BOTH, expand=True)
+    # Main Frame
+    f = Frame(game['root'], bg="#0d0221", width=800, height=750)
+    f.place(x=0, y=0)
 
-    score_text = Label(card, text="YOUR SCORE", font=("Arial", 16), fg="#a0a0a0", bg="#2d3561")
-    score_text.pack(pady=(30, 10))
-    score_label = Label(card, text="0", font=("Arial", 72, "bold"), fg="#00d4ff", bg="#2d3561")
-    score_label.pack()
+    # Animated GIF Background
+    gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\result background.gif"
+    bg_img = Image.open(gif_path)
+    frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750))) for frame in ImageSequence.Iterator(bg_img)]
+    bg_label = Label(f)
+    bg_label.place(x=0, y=0, width=800, height=750)
+
+    def animate_bg(index=0):
+        bg_label.config(image=frames[index])
+        bg_label.lower() 
+        game['root'].after(80, animate_bg, (index + 1) % len(frames))
+    animate_bg()
+
+    # Mini Frame
+    mini_frame = Frame(f, width=450, height=550, bg="#08313B")
+    mini_frame.place(relx=0.5, rely=0.5, anchor="center")
+    mini_frame.pack_propagate(False)
+
+    # Mini frame background image
+    mini_img_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\a.png"
+    mini_frame_img = Image.open(mini_img_path).resize((450, 550))
+    mini_frame_photo = ImageTk.PhotoImage(mini_frame_img)
+    bg_mini = Label(mini_frame, image=mini_frame_photo)
+    bg_mini.image = mini_frame_photo
+    bg_mini.place(x=0, y=0, relwidth=1, relheight=1)
+
+    # --- Main Results Card ---
+    card = Frame(mini_frame, bg="#175E7A", relief=RIDGE, bd=3, width=380, height=290)
+    card.place(relx=0.5, rely=0.48, anchor="center")
+    card.config(highlightbackground="#5da1d5", highlightthickness=2)
+    card.pack_propagate(False)
+
+    # Score Section
+    Label(card, text="FINAL SCORE", font=("Arial", 14, "bold"), fg="#ffffff", bg="#175E7A").place(relx=0.5, rely=0.1, anchor="center")
+    score_display = Frame(card, bg="#0d0221", relief=SUNKEN, bd=2, width=180, height=90)
+    score_display.place(relx=0.5, rely=0.33, anchor="center")
+    score_display.config(highlightthickness=3)
+    score_display.pack_propagate(False)
+    score_label = Label(score_display, text="0", font=("Impact", 38, "bold"), fg="#ffd700", bg="#0d0221")
+    score_label.place(relx=0.5, rely=0.43, anchor="center")
+
     def animate(i=0):
         if i <= score:
             score_label.config(text=str(i))
             game['root'].after(20, lambda: animate(i + 1))
     animate()
 
-    marks = Label(card, text="out of 100", font=("Arial", 14), fg="#a0a0a0", bg="#2d3561")
-    marks.pack(pady=(0, 20))
-    grade_label = Label(card, text=f"GRADE: {grade}", font=("Arial", 32, "bold"), fg=color, bg="#2d3561")
-    grade_label.pack(pady=20)
-    remarks = Label(card, text=msgg, font=("Arial", 13, "bold"), fg="white", bg="#2d3561")
-    remarks.pack(pady=(10, 30))
+    Label(score_display, text="/ 100 Points", font=("Arial", 11), fg="#FFFFFF", bg="#0d0221").place(relx=0.5, rely=0.85, anchor="center")
 
-    buttons = Frame(f, bg="#1a1a2e")
-    buttons.pack(pady=30)
+    # Grade Section
+    grade_box = Frame(card, bg="#ffd700", relief=RAISED, bd=3, width=100, height=70)
+    grade_box.place(relx=0.5, rely=0.7, anchor="center")
+    grade_box.pack_propagate(False)
+    Label(grade_box, text=grade, font=("Arial", 32, "bold"), fg="#000000", bg="#ffd700").place(relx=0.5, rely=0.5, anchor="center")
+
+    # Remarks Section
+    Label(card, text=msgg, font=("Arial", 15, "bold"), fg="#ffd700", bg="#175E7A").place(relx=0.5, rely=0.93, anchor="center")
+
+    record_frame = Frame(mini_frame, width=400, height=100)
+    record_frame.place(relx=0.5, rely=0.86, anchor="center")
+    record_frame.pack_propagate(False)
     
+    record_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\record.png").resize((400, 100))
+    record_photo = ImageTk.PhotoImage(record_img)
+    record_label = Label(record_frame, image=record_photo, bd=0)
+    record_label.image = record_photo
+    record_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+    questions_answered = game.get('question_num', 0)  
+    lives_remaining = game.get('lives', 0)
+    missed_questions = 10 - questions_answered 
+    average_time = round(sum(game['time_taken']) / len(game['time_taken']), 2) if game['time_taken'] else 0
+
+    stats_text = Label(
+        record_frame,
+        text=(
+            f"Questions Answered: {questions_answered}/10\n"
+            f"Missed Questions: {missed_questions}\n"
+            f"Lives Remaining: {lives_remaining}/3\n"
+            f"Average Time per Question: {average_time} sec"
+        ),
+        font=("Arial", 9, "bold"),
+        fg="#ffffff",
+        bg="#175E7A", 
+        justify="center"
+    )
+    stats_text.place(relx=0.5, rely=0.5, anchor="center")
+
     # Play Again Button
-    play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\play_again_button.png")  
-    play_img = play_img.resize((180, 70))
+    play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\play again button.png").resize((70, 70))
     play_photo = ImageTk.PhotoImage(play_img)
-    play = Button(buttons, image=play_photo, bg="#1a1a2e", activebackground="#1a1a2e", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
-    play.image = play_photo
-    play.pack(side=LEFT, padx=10)
+    play_button = Button(f, image=play_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
+    play_button.image = play_photo
+    play_button.place(relx=0.43, rely=0.93, anchor="center")
+    play_button.lift() 
 
     # Quit Button 
-    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png") 
-    quit_img = quit_img.resize((40, 40))
+    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png").resize((70, 70))
     quit_photo = ImageTk.PhotoImage(quit_img)
-    quit_button = Button(buttons, image=quit_photo, bg="#1a1a2e", activebackground="#1a1a2e", borderwidth=0, highlightthickness=0, cursor="hand2", command=game['root'].quit)
+    quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=game['root'].quit)
     quit_button.image = quit_photo
-    quit_button.pack(side=LEFT, padx=10)
+    quit_button.place(relx=0.57, rely=0.93, anchor="center")
+    quit_button.lift()
 
 main()
