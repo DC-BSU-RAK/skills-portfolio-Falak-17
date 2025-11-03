@@ -15,7 +15,7 @@ def main():
     game['root'].title(" Monster Math: Test Your Fear of Numbers!")
     game['root'].geometry("800x750")
     game['root'].resizable(False, False)
-    game['root'].iconbitmap("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\favicon.ico")
+    game['root'].iconbitmap("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\favicon.ico")
     start_screen()
     game['root'].mainloop()
 
@@ -52,7 +52,7 @@ def start_screen():
     start_frame.pack(fill=BOTH, expand=True)
 
     # Gif for background
-    bg_image = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Play background.gif")  
+    bg_image = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\Play background.gif")  
     frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750))) for frame in ImageSequence.Iterator(bg_image)]
     bg_label = Label(start_frame)
     bg_label.pack(fill="both", expand=True)
@@ -62,7 +62,7 @@ def start_screen():
     animate(0)
    
    # Start Button
-    start_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Play button.png") 
+    start_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Play button.png") 
     start_img = start_img.resize((220, 90))
     start_photo = ImageTk.PhotoImage(start_img)
     start_button = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
@@ -82,7 +82,7 @@ def start_screen():
         instruction_window.geometry("600x670")
         instruction_window.resizable(False, False)
 
-        instruction_frame = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Instruction background.jpg") 
+        instruction_frame = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instruction background.jpg") 
         instruction_frame = instruction_frame.resize((600, 670))
         instruction_photo = ImageTk.PhotoImage(instruction_frame)
     
@@ -90,7 +90,7 @@ def start_screen():
         bg_label.image = instruction_photo
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Instructions.png") 
+        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instructions.png") 
         instruction_label_img = instruction_label_img.resize((400, 550))
         instruction_label_photo = ImageTk.PhotoImage(instruction_label_img)
         instruction_label = Label(instruction_window, image=instruction_label_photo)
@@ -98,7 +98,7 @@ def start_screen():
         instruction_label.place(relx=0.5, rely=0.5, anchor="center")
 
     # Instructions button
-    instruction_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Instructions button.png")
+    instruction_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instructions button.png")
     instruction_img = instruction_img.resize((130, 40))
     instruction_photo = ImageTk.PhotoImage(instruction_img)
     instruction_button = Button( start_frame, image=instruction_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2",command=show_instructions)
@@ -106,7 +106,7 @@ def start_screen():
     instruction_button.place(relx=0.1, rely=0.07, anchor="center")
 
     # Exit button
-    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
+    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
     exit_button = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
@@ -122,7 +122,7 @@ def menu():
     main_frame.pack(fill=BOTH, expand=True)
 
     # Gif for background
-    gif = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\menu background.gif")  
+    gif = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\menu background.gif")  
     frames = [ImageTk.PhotoImage(frame.copy().resize((800, 800))) for frame in ImageSequence.Iterator(gif)]
     label = Label(main_frame)
     label.pack(fill="both", expand=True)
@@ -136,7 +136,7 @@ def menu():
     l1.place(relx=0.5, rely=0.05, anchor="center")
     box = Frame(main_frame, bg="#240B3F", bd=3, relief=RIDGE)
     box.place(relx=0.5, rely=0.3, anchor="center")
-    l2_img= Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\title 1.png") 
+    l2_img= Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\title 1.png") 
     l2_img = l2_img.resize((240, 50))
     l2_photo = ImageTk.PhotoImage(l2_img)
     l2 = Label(box, image=l2_photo, bg="#240B3F")
@@ -147,21 +147,21 @@ def menu():
 
 
     # Easy Button 
-    img1 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Easy button.png")
+    img1 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Easy button.png")
     img1 = img1.resize((190, 80))
     easy_img = ImageTk.PhotoImage(img1)
     easy_button = Button(buttons, image=easy_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(1))
     easy_button.image = easy_img
     easy_button.pack(pady=5)
     # Medium Button
-    img2 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Medium button.png") 
+    img2 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Medium button.png") 
     img2 = img2.resize((190, 80))
     medium_img = ImageTk.PhotoImage(img2)
     medium_button = Button(buttons, image=medium_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(2))
     medium_button.image = medium_img
     medium_button.pack(pady=5)
     # Hard Button 
-    img3 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Hard button.png") 
+    img3 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Hard button.png") 
     img3 = img3.resize((190, 80))
     hard_img = ImageTk.PhotoImage(img3)
     hard_button = Button(buttons, image=hard_img, bg="#270B44", activebackground="#270B44",borderwidth=0, cursor="hand2", command=lambda: start(3))
@@ -172,7 +172,7 @@ def menu():
     footer = Label(main_frame, text="10 Questions • 3 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
     footer.place(relx=0.5, rely=0.9, anchor="center")
     # Exit Game Button 
-    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png")
+    exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
     question_button = Button(main_frame, image=exit_photo, bg="#101025", activebackground="#101025",borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
@@ -196,24 +196,23 @@ def start(level):
 
     # Set background and time limit based on level
     if level == 1:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Green background.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Green background.jpg"
         game['time_limit'] = 10
     elif level == 2:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Orange background.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Orange background.jpg"
         game['time_limit'] = 20
     elif level == 3:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Red background.jpg"
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Red background.jpg"
         game['time_limit'] = 30
     next_question()
 
 
-# Load the next question - ADDED recording start time
+# Load the next question 
 def next_question():
     if game['question_num'] >= 10 or game['lives'] <= 0:
         results()
         return
 
-    # Update question number and reset parameters
     game['question_num'] += 1
     game['chances'] = 2
     game['countdown'] = game['time_limit']
@@ -221,7 +220,7 @@ def next_question():
     game['num1'], game['num2'] = random_nums()
     game['operator'] = random.choice(['+', '-'])
     game['ans'] = game['num1'] + game['num2'] if game['operator'] == '+' else game['num1'] - game['num2']
-    game['question_start_time'] = time.time()  # ADDED: Record start time
+    game['question_start_time'] = time.time() 
     show_q()
 
 
@@ -270,8 +269,8 @@ def show_q():
             game['root'].after(1000, tick_timer)
         elif game['countdown'] <= 0 and game['timer_running']:
             game['timer_running'] = False
-            elapsed = time.time() - game['question_start_time']  # ADDED: Calculate time taken
-            game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
+            elapsed = time.time() - game['question_start_time'] 
+            game['time_taken'].append(round(elapsed, 2))  
             game['lives'] -= 1
             if game['lives'] <= 0:
                 messagebox.showerror("Time's Up!", f"⏰ Time ran out!\n💀 No lives left!\nFinal Score: {game['score']}/100")
@@ -309,7 +308,7 @@ def show_q():
     game['entry'].bind('<Return>', lambda event: check())
 
     # Submit Button
-    submit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\enter button.png")
+    submit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\enter button.png")
     submit_img = submit_img.resize((140, 90))
     submit_photo = ImageTk.PhotoImage(submit_img)
     sub_button = Button(f, image=submit_photo, bg="#000000",activebackground="#000000", borderwidth=0,highlightthickness=0, cursor="hand2", command=check)
@@ -326,7 +325,7 @@ def show_q():
         streak_record.pack(pady=5)
 
     # Quit Button
-    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button.png")
+    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button.png")
     quit_img = quit_img.resize((50, 50))
     quit_photo = ImageTk.PhotoImage(quit_img)
     quit_button = Button(f, image=quit_photo, bg="#121111",activebackground="#121111", borderwidth=0,highlightthickness=0, cursor="hand2", command=confirm_exit)
@@ -334,7 +333,7 @@ def show_q():
     quit_button.place(relx=0.95, rely=0.95, anchor="center")
 
     # Return button to go back to Menu screen
-    return_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\return button.png")
+    return_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\return button.png")
     return_img = return_img.resize((50, 50))
     return_photo = ImageTk.PhotoImage(return_img)
     return_button = Button(f, image=return_photo, bg="#121111", activebackground="#121111",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: confirm_return())
@@ -363,12 +362,12 @@ def check():
         game['entry'].delete(0, END)
  
 
-# Function to check the user's answer - ADDED time tracking
+# Function to check the user's answer 
 def check_ans(user):
-    elapsed = time.time() - game['question_start_time']  # ADDED: Calculate elapsed time
+    elapsed = time.time() - game['question_start_time'] 
     
     if user == game['ans']:
-        game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
+        game['time_taken'].append(round(elapsed, 2))  
         if game['chances'] == 2:
             game['score'] += 10
             game['streak'] += 1
@@ -385,7 +384,7 @@ def check_ans(user):
             game['timer_running'] = True
             show_q()
         else:
-            game['time_taken'].append(round(elapsed, 2))  # ADDED: Record time taken
+            game['time_taken'].append(round(elapsed, 2))  
             game['lives'] -= 1
             if game['lives'] <= 0:
                 messagebox.showerror("Game Over", f"💀 No lives left!\nFinal Score: {game['score']}/100")
@@ -418,7 +417,7 @@ def results():
     f.place(x=0, y=0)
 
     # Animated GIF Background
-    gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\result background.gif"
+    gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\result background.gif"
     bg_img = Image.open(gif_path)
     frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750))) for frame in ImageSequence.Iterator(bg_img)]
     bg_label = Label(f)
@@ -436,7 +435,7 @@ def results():
     mini_frame.pack_propagate(False)
 
     # Mini frame background image
-    mini_img_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\a.png"
+    mini_img_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\box.png"
     mini_frame_img = Image.open(mini_img_path).resize((450, 550))
     mini_frame_photo = ImageTk.PhotoImage(mini_frame_img)
     bg_mini = Label(mini_frame, image=mini_frame_photo)
@@ -478,8 +477,9 @@ def results():
     record_frame = Frame(mini_frame, width=400, height=100)
     record_frame.place(relx=0.5, rely=0.86, anchor="center")
     record_frame.pack_propagate(False)
-    
-    record_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\record.png").resize((400, 100))
+
+    record_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\record.png")
+    record_img = record_img.resize((400, 100))
     record_photo = ImageTk.PhotoImage(record_img)
     record_label = Label(record_frame, image=record_photo, bd=0)
     record_label.image = record_photo
@@ -506,15 +506,15 @@ def results():
     stats_text.place(relx=0.5, rely=0.5, anchor="center")
 
     # Play Again Button
-    play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\play again button.png").resize((70, 70))
+    play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\play again button.png").resize((70, 70))
     play_photo = ImageTk.PhotoImage(play_img)
     play_button = Button(f, image=play_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
     play_button.image = play_photo
     play_button.place(relx=0.43, rely=0.93, anchor="center")
     play_button.lift() 
 
-    # Quit Button 
-    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\quit button 1.png").resize((70, 70))
+    # Quit Button
+    quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png").resize((70, 70))
     quit_photo = ImageTk.PhotoImage(quit_img)
     quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=game['root'].quit)
     quit_button.image = quit_photo
