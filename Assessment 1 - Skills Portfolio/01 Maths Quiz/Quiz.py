@@ -3,7 +3,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk, ImageSequence
 import random
 import time
-
+import pygame 
 
 game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0}
 
@@ -15,6 +15,8 @@ def main():
     game['root'].geometry("800x750")
     game['root'].resizable(False, False)
     game['root'].iconbitmap("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\favicon.ico")
+    setup_audio()
+    play_music('home_music')
     start_screen()
     game['root'].mainloop()
 
@@ -42,9 +44,68 @@ def leave(btn, color):
     btn.config(bg=color)
 
 
+# Audio Setup
+def setup_audio():
+    pygame.mixer.init()
+    game['sounds'] = {}
+
+    sound_files = {
+        'home_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\Main menu.wav',
+        'easy_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\easy.wav',
+        'medium_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\medium wave',
+        'hard_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\hard.wav',
+        'victory_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\win.wav',
+        'defeat_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\fail.wav',
+        'correct': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\correct answer.wav',
+        'wrong': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\wrong answer.wav',
+        'button_click': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\01 Maths Quiz\Audios\button click.wav' }
+
+    for sound_name, sound_path in sound_files.items():
+        try:
+            if 'music' in sound_name:
+                game['sounds'][sound_name] = sound_path 
+            else:
+                game['sounds'][sound_name] = pygame.mixer.Sound(sound_path)
+        except FileNotFoundError:
+            print(f"⚠️ Warning: Sound not found: {sound_path}")
+
+
+# Button click sound wrapper
+def button_click_sound(command):
+    def wrapper(*args, **kwargs):
+        play_sound_effect('button_click')
+        return command(*args, **kwargs)
+    return wrapper
+
+
+# Play Background Music
+def play_music(music_name):
+    stop_music()
+    if music_name in game.get('sounds', {}):
+        try:
+            pygame.mixer.music.load(game['sounds'][music_name])
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.3)
+        except Exception as e:
+            print(f"❌ Could not play music '{music_name}': {e}")
+    
+
+# Stop Music
+def stop_music():
+    pygame.mixer.music.stop()
+
+
+# Play Sound Effect
+def play_sound_effect(sound_name):
+    sound = game.get('sounds', {}).get(sound_name)
+    if isinstance(sound, pygame.mixer.Sound):
+        sound.play()
+
+
 # Start Window
 def start_screen():
     clear_screen()
+
     
     # Start window's Frame 
     start_frame = Frame(game['root'])
@@ -64,7 +125,7 @@ def start_screen():
     start_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Play button.png") 
     start_img = start_img.resize((220, 90))
     start_photo = ImageTk.PhotoImage(start_img)
-    start_button = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
+    start_button = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40", borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(menu))
     start_button.image = start_photo
     start_button.place(relx=0.5, rely=0.9, anchor="center")
 
@@ -100,7 +161,7 @@ def start_screen():
     instruction_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instructions button.png")
     instruction_img = instruction_img.resize((130, 40))
     instruction_photo = ImageTk.PhotoImage(instruction_img)
-    instruction_button = Button( start_frame, image=instruction_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2",command=show_instructions)
+    instruction_button = Button( start_frame, image=instruction_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2",command=button_click_sound(show_instructions))
     instruction_button.image = instruction_photo
     instruction_button.place(relx=0.1, rely=0.07, anchor="center")
 
@@ -108,13 +169,15 @@ def start_screen():
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
-    exit_button = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
+    exit_button = Button(start_frame, image=exit_photo, bg="#372345", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(confirm_exit))
     exit_button.image = exit_photo
     exit_button.place(relx=0.93, rely=0.07, anchor="center")
 
 
 # Menu Window
 def menu():
+    stop_music()
+    play_music('home_music')
     clear_screen()
 
     main_frame = Frame(game['root'], bg="#270B44")
@@ -149,21 +212,21 @@ def menu():
     img1 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Easy button.png")
     img1 = img1.resize((190, 80))
     easy_img = ImageTk.PhotoImage(img1)
-    easy_button = Button(buttons, image=easy_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(1))
+    easy_button = Button(buttons, image=easy_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(lambda: start(1)))
     easy_button.image = easy_img
     easy_button.pack(pady=5)
     # Medium Button
     img2 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Medium button.png") 
     img2 = img2.resize((190, 80))
     medium_img = ImageTk.PhotoImage(img2)
-    medium_button = Button(buttons, image=medium_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: start(2))
+    medium_button = Button(buttons, image=medium_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(lambda: start(2)))
     medium_button.image = medium_img
     medium_button.pack(pady=5)
     # Hard Button 
     img3 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Hard button.png") 
     img3 = img3.resize((190, 80))
     hard_img = ImageTk.PhotoImage(img3)
-    hard_button = Button(buttons, image=hard_img, bg="#270B44", activebackground="#270B44",borderwidth=0, cursor="hand2", command=lambda: start(3))
+    hard_button = Button(buttons, image=hard_img, bg="#270B44", activebackground="#270B44",borderwidth=0, cursor="hand2", command=button_click_sound(lambda: start(3)))
     hard_button.image = hard_img
     hard_button.pack(pady=5)
 
@@ -174,7 +237,7 @@ def menu():
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
-    question_button = Button(main_frame, image=exit_photo, bg="#101025", activebackground="#101025",borderwidth=0, highlightthickness=0, cursor="hand2", command=confirm_exit)
+    question_button = Button(main_frame, image=exit_photo, bg="#101025", activebackground="#101025",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(confirm_exit))
     question_button.image = exit_photo
     question_button.place(relx=0.93, rely=0.07, anchor="center")
 
@@ -191,18 +254,22 @@ def random_nums():
 
 # Start the quiz 
 def start(level):
+    stop_music()
     game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0})
 
     # Set background and time limit based on level
     if level == 1:
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Green background.jpg"
         game['time_limit'] = 10
+        play_music('easy_music')
     elif level == 2:
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Orange background.jpg"
         game['time_limit'] = 20
+        play_music('medium_music')
     elif level == 3:
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Red background.jpg"
         game['time_limit'] = 30
+        play_music('hard music')
     next_question()
 
 
@@ -258,7 +325,7 @@ def show_q():
     lives_label = Label(top, text=f"Lives: {lives_display}",font=("Arial", 14, "bold"), fg="#ff4757", bg="#16213e")
     lives_label.pack(side=RIGHT, padx=30)
     
-    # Timer display - ADDED time tracking when timer runs out
+    # Timer display 
     time_widget = Label(top, text=f"⏱ {game['countdown']}s",font=('Arial', 16, 'bold'), fg='#3498db', bg='#16213e')
     time_widget.pack(side=RIGHT, padx=15)
     def tick_timer():
@@ -310,7 +377,7 @@ def show_q():
     submit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\enter button.png")
     submit_img = submit_img.resize((140, 90))
     submit_photo = ImageTk.PhotoImage(submit_img)
-    sub_button = Button(f, image=submit_photo, bg="#000000",activebackground="#000000", borderwidth=0,highlightthickness=0, cursor="hand2", command=check)
+    sub_button = Button(f, image=submit_photo, bg="#000000",activebackground="#000000", borderwidth=0,highlightthickness=0, cursor="hand2", command=button_click_sound(check))
     sub_button.image = submit_photo
     sub_button.pack(pady=10)
 
@@ -327,7 +394,7 @@ def show_q():
     quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button.png")
     quit_img = quit_img.resize((50, 50))
     quit_photo = ImageTk.PhotoImage(quit_img)
-    quit_button = Button(f, image=quit_photo, bg="#121111",activebackground="#121111", borderwidth=0,highlightthickness=0, cursor="hand2", command=confirm_exit)
+    quit_button = Button(f, image=quit_photo, bg="#121111",activebackground="#121111", borderwidth=0,highlightthickness=0, cursor="hand2", command=button_click_sound(confirm_exit))
     quit_button.image = quit_photo
     quit_button.place(relx=0.95, rely=0.95, anchor="center")
 
@@ -335,7 +402,7 @@ def show_q():
     return_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\return button.png")
     return_img = return_img.resize((50, 50))
     return_photo = ImageTk.PhotoImage(return_img)
-    return_button = Button(f, image=return_photo, bg="#121111", activebackground="#121111",borderwidth=0, highlightthickness=0, cursor="hand2", command=lambda: confirm_return())
+    return_button = Button(f, image=return_photo, bg="#121111", activebackground="#121111",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(lambda: confirm_return()))
     return_button.image = return_photo
     return_button.place(relx=0.055, rely=0.95, anchor="center")
 
@@ -361,27 +428,11 @@ def check():
         game['entry'].delete(0, END)
  
 
-# Function to check the user's answer 
-def start(level):
-    game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0})
-
-    # Set background and time limit based on level
-    if level == 1:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Green background.jpg"
-        game['time_limit'] = 10
-    elif level == 2:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Orange background.jpg"
-        game['time_limit'] = 20
-    elif level == 3:
-        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Red background.jpg"
-        game['time_limit'] = 30
-    next_question()
-
-
 def check_ans(user):
     elapsed = time.time() - game['question_start_time'] 
     
     if user == game['ans']:
+        play_sound_effect('correct')
         game['answered_questions'] += 1  
         game['time_taken'].append(round(elapsed, 2))  
         if game['chances'] == 2:
@@ -392,6 +443,7 @@ def check_ans(user):
             game['streak'] = 0
         next_question()
     else:
+        play_sound_effect('wrong')
         game['chances'] -= 1
         game['streak'] = 0
         if game['chances'] > 0:
@@ -403,6 +455,7 @@ def check_ans(user):
             game['time_taken'].append(round(elapsed, 2))  
             game['lives'] -= 1
             if game['lives'] <= 0:
+                play_music('defeat_music')
                 messagebox.showerror("Game Over", f"💀 No lives left!\nFinal Score: {game['score']}/100")
                 results()
                 return
@@ -427,6 +480,15 @@ def results():
         grade, msgg = "C", "You’re improving — keep the momentum!"
     else:
         grade, msgg = "F", "Don’t quit — every setback is a setup for a comeback!"
+
+
+    if score >= 60:
+        stop_music()
+        play_music('victory_music')
+    else:
+        stop_music()
+        play_music('defeat_music')
+
 
     # Main Frame
     f = Frame(game['root'], bg="#0d0221", width=800, height=750)
@@ -496,7 +558,7 @@ def results():
     obtained_grade.place(relx=0.5, rely=0.51, anchor="center")
 
     # Remarks Section
-    remarks = Label(mini_frame, text=msgg, font=("Arial", 15, "bold"), fg="#ffd700", bg="#08313B")
+    remarks = Label(mini_frame, text=msgg, font=("Arial", 12, "bold"), fg="#ffd700", bg="#08313B")
     remarks.place(relx=0.5, rely=0.66, anchor="center")
 
     record_frame = Frame(mini_frame, width=400, height=100)
@@ -521,14 +583,14 @@ def results():
     # Play Again Button
     play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\play again button.png").resize((70, 70))
     play_photo = ImageTk.PhotoImage(play_img)
-    play_button = Button(f, image=play_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
+    play_button = Button(f, image=play_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(menu))
     play_button.image = play_photo
     play_button.place(relx=0.43, rely=0.93, anchor="center")
 
     # Quit Button
     quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png").resize((70, 70))
     quit_photo = ImageTk.PhotoImage(quit_img)
-    quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=game['root'].quit)
+    quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(game['root'].quit))
     quit_button.image = quit_photo
     quit_button.place(relx=0.57, rely=0.93, anchor="center")
 
