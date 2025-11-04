@@ -5,8 +5,7 @@ import random
 import time
 
 
-# Store all game data in dictionary - ADDED 'question_start_time'
-game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0 }
+game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0}
 
 
 # Main Window
@@ -190,7 +189,7 @@ def random_nums():
     return random.randint(1000, 9999), random.randint(1000, 9999)
 
 
-# Start the quiz - ADDED time_taken and question_start_time initialization
+# Start the quiz 
 def start(level):
     game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0})
 
@@ -363,10 +362,27 @@ def check():
  
 
 # Function to check the user's answer 
+def start(level):
+    game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0})
+
+    # Set background and time limit based on level
+    if level == 1:
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Green background.jpg"
+        game['time_limit'] = 10
+    elif level == 2:
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Orange background.jpg"
+        game['time_limit'] = 20
+    elif level == 3:
+        game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Red background.jpg"
+        game['time_limit'] = 30
+    next_question()
+
+
 def check_ans(user):
     elapsed = time.time() - game['question_start_time'] 
     
     if user == game['ans']:
+        game['answered_questions'] += 1  
         game['time_taken'].append(round(elapsed, 2))  
         if game['chances'] == 2:
             game['score'] += 10
@@ -402,15 +418,15 @@ def results():
 
     score = game['score']
     if score >= 90:
-        grade, msgg = "A+", "OUTSTANDING!"
+        grade, msgg = "A+", "Phenomenal! You’ve mastered this!"
     elif score >= 80:
-        grade, msgg = "A", "EXCELLENT!"
+        grade, msgg = "A", "Amazing effort — excellence achieved!"
     elif score >= 70:
-        grade, msgg = "B", "GOOD JOB!"
+        grade, msgg = "B", "Solid performance! You’re getting stronger!"
     elif score >= 60:
-        grade, msgg = "C", "NOT BAD!"
+        grade, msgg = "C", "You’re improving — keep the momentum!"
     else:
-        grade, msgg = "F", "KEEP PRACTICING!"
+        grade, msgg = "F", "Don’t quit — every setback is a setup for a comeback!"
 
     # Main Frame
     f = Frame(game['root'], bg="#0d0221", width=800, height=750)
@@ -442,20 +458,25 @@ def results():
     bg_mini.image = mini_frame_photo
     bg_mini.place(x=0, y=0, relwidth=1, relheight=1)
 
-    # --- Main Results Card ---
-    card = Frame(mini_frame, bg="#175E7A", relief=RIDGE, bd=3, width=380, height=290)
-    card.place(relx=0.5, rely=0.48, anchor="center")
-    card.config(highlightbackground="#5da1d5", highlightthickness=2)
-    card.pack_propagate(False)
+    # Main Result Card 
+    card_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\card frame.png")
+    card_img = card_img.resize((380, 290))
+    card_photo = ImageTk.PhotoImage(card_img)
+    card = Label(mini_frame, image=card_photo, bg="#08313B", bd=0)
+    card.image = card_photo
+    card.place(relx=0.5, rely=0.47, anchor="center")
 
     # Score Section
-    Label(card, text="FINAL SCORE", font=("Arial", 14, "bold"), fg="#ffffff", bg="#175E7A").place(relx=0.5, rely=0.1, anchor="center")
-    score_display = Frame(card, bg="#0d0221", relief=SUNKEN, bd=2, width=180, height=90)
-    score_display.place(relx=0.5, rely=0.33, anchor="center")
+    Message = Label(mini_frame, text="FINAL SCORE", font=("Arial", 14, "bold"), fg="#ffffff", bg="#08313B")
+    Message.place(relx=0.5, rely=0.26, anchor="center")
+    
+    score_display = Frame(mini_frame, bg="#0d0221", relief=SUNKEN, bd=2, width=180, height=90)
+    score_display.place(relx=0.5, rely=0.38, anchor="center")
     score_display.config(highlightthickness=3)
     score_display.pack_propagate(False)
+    
     score_label = Label(score_display, text="0", font=("Impact", 38, "bold"), fg="#ffd700", bg="#0d0221")
-    score_label.place(relx=0.5, rely=0.43, anchor="center")
+    score_label.place(relx=0.5, rely=0.44, anchor="center")
 
     def animate(i=0):
         if i <= score:
@@ -463,19 +484,23 @@ def results():
             game['root'].after(20, lambda: animate(i + 1))
     animate()
 
-    Label(score_display, text="/ 100 Points", font=("Arial", 11), fg="#FFFFFF", bg="#0d0221").place(relx=0.5, rely=0.85, anchor="center")
+    obtained_score = Label(score_display, text="/ 100 Points", font=("Arial", 11), fg="#FFFFFF", bg="#0d0221")
+    obtained_score.place(relx=0.5, rely=0.88, anchor="center")
 
     # Grade Section
-    grade_box = Frame(card, bg="#ffd700", relief=RAISED, bd=3, width=100, height=70)
-    grade_box.place(relx=0.5, rely=0.7, anchor="center")
+    grade_box = Frame(mini_frame, bg="#ffd700", relief=RAISED, bd=3, width=100, height=70)
+    grade_box.place(relx=0.5, rely=0.56, anchor="center")
     grade_box.pack_propagate(False)
-    Label(grade_box, text=grade, font=("Arial", 32, "bold"), fg="#000000", bg="#ffd700").place(relx=0.5, rely=0.5, anchor="center")
+    
+    obtained_grade = Label(grade_box, text=grade, font=("Arial", 32, "bold"), fg="#000000", bg="#ffd700")
+    obtained_grade.place(relx=0.5, rely=0.51, anchor="center")
 
     # Remarks Section
-    Label(card, text=msgg, font=("Arial", 15, "bold"), fg="#ffd700", bg="#175E7A").place(relx=0.5, rely=0.93, anchor="center")
+    remarks = Label(mini_frame, text=msgg, font=("Arial", 15, "bold"), fg="#ffd700", bg="#08313B")
+    remarks.place(relx=0.5, rely=0.66, anchor="center")
 
     record_frame = Frame(mini_frame, width=400, height=100)
-    record_frame.place(relx=0.5, rely=0.86, anchor="center")
+    record_frame.place(relx=0.5, rely=0.84, anchor="center")
     record_frame.pack_propagate(False)
 
     record_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\record.png")
@@ -485,24 +510,12 @@ def results():
     record_label.image = record_photo
     record_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    questions_answered = game.get('question_num', 0)  
+    questions_answered = game.get('answered_questions', 0)  
     lives_remaining = game.get('lives', 0)
     missed_questions = 10 - questions_answered 
     average_time = round(sum(game['time_taken']) / len(game['time_taken']), 2) if game['time_taken'] else 0
 
-    stats_text = Label(
-        record_frame,
-        text=(
-            f"Questions Answered: {questions_answered}/10\n"
-            f"Missed Questions: {missed_questions}\n"
-            f"Lives Remaining: {lives_remaining}/3\n"
-            f"Average Time per Question: {average_time} sec"
-        ),
-        font=("Arial", 9, "bold"),
-        fg="#ffffff",
-        bg="#175E7A", 
-        justify="center"
-    )
+    stats_text = Label(record_frame, text=f"Questions Answered: {questions_answered}/10\nMissed Questions: {missed_questions}\nLives Remaining: {lives_remaining}/3\nAverage Time per Question: {average_time} sec", font=("Arial", 9, "bold"), fg="#ffffff", bg="#175E7A", justify="center")
     stats_text.place(relx=0.5, rely=0.5, anchor="center")
 
     # Play Again Button
@@ -511,7 +524,6 @@ def results():
     play_button = Button(f, image=play_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=menu)
     play_button.image = play_photo
     play_button.place(relx=0.43, rely=0.93, anchor="center")
-    play_button.lift() 
 
     # Quit Button
     quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png").resize((70, 70))
@@ -519,6 +531,5 @@ def results():
     quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=game['root'].quit)
     quit_button.image = quit_photo
     quit_button.place(relx=0.57, rely=0.93, anchor="center")
-    quit_button.lift()
 
 main()
