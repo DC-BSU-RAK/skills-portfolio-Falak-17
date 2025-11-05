@@ -493,18 +493,29 @@ def results():
     f = Frame(game['root'], bg="#0d0221", width=800, height=750)
     f.place(x=0, y=0)
 
-    # Animated GIF Background
-    gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\result background.gif"
-    bg_img = Image.open(gif_path)
-    frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750))) for frame in ImageSequence.Iterator(bg_img)]
-    bg_label = Label(f)
-    bg_label.place(x=0, y=0, width=800, height=750)
-
-    def animate_bg(index=0):
-        bg_label.config(image=frames[index])
-        bg_label.lower() 
-        game['root'].after(80, animate_bg, (index + 1) % len(frames))
-    animate_bg()
+    if score >= 60:
+        gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\result background 1.gif"
+        bg_img = Image.open(gif_path)
+        frames = [ImageTk.PhotoImage(frame.copy().resize((800, 750))) for frame in ImageSequence.Iterator(bg_img)]
+        bg_label = Label(f)
+        bg_label.place(x=0, y=0, width=800, height=750)
+        def animate_bg(index=0):
+            bg_label.config(image=frames[index])
+            bg_label.lower() 
+            game['root'].after(80, animate_bg, (index + 1) % len(frames))
+        animate_bg()
+    else:
+        gif_path1 = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\result background.gif"
+        bg_img = Image.open(gif_path1)
+        frame1 = [ImageTk.PhotoImage(frame.copy().resize((800, 780))) for frame in ImageSequence.Iterator(bg_img)]
+        bg_label1 = Label(f)
+        bg_label1.place(x=0, y=0, width=800, height=750)
+        def animate_bg(index=0):
+            bg_label1.config(image=frame1[index])
+            bg_label1.lower() 
+            game['root'].after(80, animate_bg, (index + 1) % len(frame1))
+        animate_bg()
+    
 
     # Mini Frame
     mini_frame = Frame(f, width=450, height=550, bg="#08313B")
@@ -577,7 +588,7 @@ def results():
     average_time = round(sum(game['time_taken']) / len(game['time_taken']), 2) if game['time_taken'] else 0
 
     stats_text = Label(record_frame, text=f"Questions Answered: {questions_answered}/10\nMissed Questions: {missed_questions}\nLives Remaining: {lives_remaining}/3\nAverage Time per Question: {average_time} sec", font=("Arial", 9, "bold"), fg="#ffffff", bg="#175E7A", justify="center")
-    stats_text.place(relx=0.5, rely=0.5, anchor="center")
+    stats_text.place(relx=0.5, rely=0.5, anchor="center")    
 
     # Play Again Button
     play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\play again button.png").resize((70, 70))
