@@ -230,7 +230,7 @@ def menu():
     hard_button.pack(pady=5)
 
     # Footer Information
-    footer = Label(main_frame, text="10 Questions • 3 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
+    footer = Label(main_frame, text="10 Questions • 2 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
     footer.place(relx=0.5, rely=0.9, anchor="center")
     # Exit Game Button 
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
