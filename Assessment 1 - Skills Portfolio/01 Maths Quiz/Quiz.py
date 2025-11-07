@@ -5,41 +5,50 @@ import random
 import time
 import pygame 
 
+# Dictionary to hold all game data
 game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0}
 
 
-# Main Window
+# Main Function
 def main():
+    # Create the main window for the game
     game['root'] = Tk()
     game['root'].title(" Monster Math: Test Your Fear of Numbers!")
     game['root'].geometry("800x750")
     game['root'].resizable(False, False)
-    game['root'].iconbitmap("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\favicon.ico")
+
+    # Custom app icon
+    game['root'].iconbitmap("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\favicon.ico") 
+    
+    # Initialize and start background music
     setup_audio()
     play_music('home_music')
+
+    # Load the start screen first
     start_screen()
     game['root'].mainloop()
 
 
-# Clear all widgets from the screen
+# Removes all widgets from the screen
 def clear_screen():
     for widget in game['root'].winfo_children():
         widget.destroy()
 
 
 # Confirm Exit
+# Displays messagebox before quitting
 def confirm_exit():
     answer = messagebox.askyesno("Quit", "Are you sure you want to quit?")
     if answer:
         game['root'].quit()
 
 
-# Button hover effects
+# Button hover effects - changes button background color
 def hover(btn, color): 
     btn.config(bg=color)
 
 
-# Button leave effects
+# Button leave effects - restores original color
 def leave(btn, color): 
     btn.config(bg=color)
 
@@ -49,6 +58,7 @@ def setup_audio():
     pygame.mixer.init()
     game['sounds'] = {}
 
+    # Dictionary containing all sound file paths
     sound_files = {
         'home_music': r'C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Audios\\Main menu.wav',
         'easy_music': r'C:\\Users\\User\\Documents\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Audios\\easy.wav',
@@ -70,7 +80,7 @@ def setup_audio():
             print(f"⚠️ Warning: Sound not found: {sound_path}")
 
 
-# Button click sound wrapper ( TAKEN FROM GPT )
+# Wrapper to add a sound effect whenever a button is clicked ( TAKEN FROM GPT )
 def button_click_sound(command):
     def wrapper(*args, **kwargs):
         play_sound_effect('button_click')
@@ -102,11 +112,11 @@ def play_sound_effect(sound_name):
         sound.play()
 
 
-# Start Window
+# Start Screen
 def start_screen():
     clear_screen()
 
-    # Start window's Frame
+    # A frame for the start screen
     start_frame = Frame(game['root'])
     start_frame.pack(fill=BOTH, expand=True)
 
@@ -116,26 +126,27 @@ def start_screen():
     bg_label = Label(start_frame)
     bg_label.pack(fill="both", expand=True)
 
+    # Function to loop through GIF frames
     def animate(index=0):
         bg_label.config(image=frames[index])
         game['root'].after(25, animate, (index + 1) % len(frames))
     animate(0)
 
-    # Start Button
-    start_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Play button.png")
-    start_img = start_img.resize((220, 90))
-    start_photo = ImageTk.PhotoImage(start_img)
-    start_button = Button(start_frame, image=start_photo, bg="#382D40", activebackground="#382D40",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(menu))
-    start_button.image = start_photo
-    start_button.place(relx=0.5, rely=0.9, anchor="center")
+    # Play Button
+    play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Play button.png")
+    play_img = play_img.resize((220, 90))
+    play_photo = ImageTk.PhotoImage(play_img)
+    play_button = Button(start_frame, image=play_photo, bg="#382D40", activebackground="#382D40",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(menu))
+    play_button.image = play_photo
+    play_button.place(relx=0.5, rely=0.9, anchor="center")
 
     # Bounce Animation for Start Button (TAKEN FROM GPT)
     def bounce(widget, y=0, direction=1):
         widget.place_configure(rely=0.85 + y/100)
         game['root'].after(350, lambda: bounce(widget, y + direction*2, -direction if abs(y) > 5 else direction))
-    bounce(start_button)
+    bounce(play_button)
 
-    # Instructions Window
+    # Inner function to show instructions in a popup window
     def show_instructions():
         instruction_window = Toplevel()
         instruction_window.title("Quiz Instructions")
@@ -172,17 +183,19 @@ def start_screen():
     exit_button.image = exit_photo
     exit_button.place(relx=0.93, rely=0.07, anchor="center")
 
-    # "Made by" Label
+    # Name Label
     made_by_label = Label(start_frame,text="Made by-Falak Ahsan",font=("Comic Sans MS", 11, "bold"),fg="#FFAE00",bg="#382E3F")
     made_by_label.place(relx=0.89, rely=0.98, anchor="center")
 
 
 # Menu Window
 def menu():
-    stop_music()
+    # Play background music
     play_music('home_music')
+    # Clear whatever was on screen before showing the menu
     clear_screen()
 
+    # Main menu's frame
     main_frame = Frame(game['root'], bg="#270B44")
     main_frame.pack(fill=BOTH, expand=True)
 
@@ -207,25 +220,26 @@ def menu():
     l2 = Label(box, image=l2_photo, bg="#240B3F")
     l2.image = l2_photo
     l2.pack()
+
+    # A frame to hold the difficulty buttons neatly in the center
     buttons = Frame(main_frame, bg="#240B3F")
     buttons.place(relx=0.5, rely=0.6, anchor="center")
 
-
-    # Easy Button 
+    # Easy Level Button 
     img1 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Easy button.png")
     img1 = img1.resize((190, 80))
     easy_img = ImageTk.PhotoImage(img1)
     easy_button = Button(buttons, image=easy_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(lambda: start(1)))
     easy_button.image = easy_img
     easy_button.pack(pady=5)
-    # Medium Button
+    # Medium Level Button
     img2 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Medium button.png") 
     img2 = img2.resize((190, 80))
     medium_img = ImageTk.PhotoImage(img2)
     medium_button = Button(buttons, image=medium_img, bg="#270B44", activebackground="#270B44",borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(lambda: start(2)))
     medium_button.image = medium_img
     medium_button.pack(pady=5)
-    # Hard Button 
+    # Hard Level Button 
     img3 = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Hard button.png") 
     img3 = img3.resize((190, 80))
     hard_img = ImageTk.PhotoImage(img3)
@@ -236,7 +250,8 @@ def menu():
     # Footer Information
     footer = Label(main_frame, text="10 Questions • 2 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
     footer.place(relx=0.5, rely=0.9, anchor="center")
-    # Exit Game Button 
+
+    # Exit Button 
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
     exit_photo = ImageTk.PhotoImage(exit_img)
@@ -249,9 +264,12 @@ def menu():
 def random_nums():
     level = game['level']
     if level == 1: 
+        # Easy level
         return random.randint(1, 9), random.randint(1, 9)
     if level == 2: 
+        # Medium Level
         return random.randint(10, 99), random.randint(10, 99)
+    # Hard Level
     return random.randint(1000, 9999), random.randint(1000, 9999)
 
 
@@ -273,23 +291,32 @@ def start(level):
         game['bg'] = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Red background.jpg"
         game['time_limit'] = 30
         play_music('hard_music')
+    # Move to the first question
     next_question()
 
 
 # Load the next question 
 def next_question():
+    # If player answered all 10 questions or lost all lives, end the game
     if game['question_num'] >= 10 or game['lives'] <= 0:
         results()
         return
 
+    # Prepare the next question state
     game['question_num'] += 1
     game['chances'] = 2
     game['countdown'] = game['time_limit']
     game['timer_running'] = True
+
+    # Randomize operands and operator (+ or -)
     game['num1'], game['num2'] = random_nums()
     game['operator'] = random.choice(['+', '-'])
     game['ans'] = game['num1'] + game['num2'] if game['operator'] == '+' else game['num1'] - game['num2']
+    
+    # Record the question start time to track player speed
     game['question_start_time'] = time.time() 
+
+    # Shows the question on screen
     show_q()
 
 
@@ -410,68 +437,81 @@ def show_q():
     return_button.place(relx=0.055, rely=0.95, anchor="center")
 
 
-# Confirm Return to Menu
+# Function to confirm returning to the main menu
 def confirm_return():
-    game['timer_running'] = False
+    game['timer_running'] = False # Function to confirm returning to the main menu
     answer = messagebox.askyesno("Return to Menu", "Are you sure you want to return?\nYour progress will be lost!")
     if answer:
         menu()    
     else:
-        game['timer_running'] = True
+        game['timer_running'] = True # Resume timer if user cancels
 
 
 # Function to check and display message if the entry field is empty or invalid
 def check():
     try:
-        ans = int(game['entry'].get())
-        game['timer_running'] = False
-        check_ans(ans)
+        ans = int(game['entry'].get()) # Trying to convert input to integer
+        game['timer_running'] = False # Stop timer while checking
+        check_ans(ans) # Pass input to answer checking function
     except ValueError:
         messagebox.showerror("Invalid", "Please enter a valid number!")
-        game['entry'].delete(0, END)
+        game['entry'].delete(0, END) # Clear the entry field
  
 
 def check_ans(user):
+    # Calculate time taken for current question
     elapsed = time.time() - game['question_start_time'] 
     
+    # If the answer is correct
     if user == game['ans']:
-        play_sound_effect('correct')
-        game['answered_questions'] += 1  
-        game['time_taken'].append(round(elapsed, 2))  
+        play_sound_effect('correct') # Play success sound
+        game['answered_questions'] += 1  # Increment answered question count
+        game['time_taken'].append(round(elapsed, 2))  # Record time taken
         if game['chances'] == 2:
-            game['score'] += 10
-            game['streak'] += 1
+            game['score'] += 10 # Full points on first try
+            game['streak'] += 1 # Increase streak
         else:
-            game['score'] += 5
-            game['streak'] = 0
-        next_question()
+            game['score'] += 5 # Half points on second try
+            game['streak'] = 0 # Reset streak if needed
+        next_question() # Load next question
+
+    # If the answer is incorrect
     else:
-        play_sound_effect('wrong')
-        game['chances'] -= 1
-        game['streak'] = 0
+        play_sound_effect('wrong') # Play wrong sound
+        game['chances'] -= 1 # Reduce attempt count
+        game['streak'] = 0 # Reset streak
+
+        # If user still has one more chance
         if game['chances'] > 0:
             game['timer_running'] = False
             messagebox.showwarning("Incorrect", "❌ Wrong! Try again.")
-            game['timer_running'] = True
-            show_q()
+            game['timer_running'] = True # Resume timer
+            show_q() # Reloads the question screen
+        # If both chances are used up
         else:
-            game['time_taken'].append(round(elapsed, 2))  
-            game['lives'] -= 1
+            game['time_taken'].append(round(elapsed, 2)) # Record time taken
+            game['lives'] -= 1 # Lose one life
+            # Game over if no lives left
             if game['lives'] <= 0:
                 play_music('defeat_music')
                 messagebox.showerror("Game Over", f"💀 No lives left!\nFinal Score: {game['score']}/100")
-                results()
+                results() # Show results screen
                 return
             else:
+                # Show correct answer and continue by a message box
                 messagebox.showwarning("Incorrect", f"❌ Correct answer: {game['ans']}\nLives left: {game['lives']}")
                 next_question()
 
 
 # Display the results screen
 def results():
-    game['timer_running'] = False
-    clear_screen()
+    # Stop timer
+    game['timer_running'] = False 
 
+    # Clear window for result display
+    clear_screen() 
+
+    # Determine grade and feedback message based on score
     score = game['score']
     if score >= 90:
         grade, msgg = "A+", "Phenomenal! You’ve mastered this!"
@@ -485,6 +525,7 @@ def results():
         grade, msgg = "F", "Don’t quit — keep trying!"
 
 
+    # Play victory or defeat music based on performance
     if score >= 60:
         stop_music()
         play_music('victory_music')
@@ -493,10 +534,11 @@ def results():
         play_music('defeat_music')
 
 
-    # Main Frame
+    # Result's frame
     f = Frame(game['root'], bg="#0d0221", width=800, height=750)
     f.place(x=0, y=0)
 
+    # Background GIF based on pass/fail result
     if score >= 60:
         gif_path = "C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Gifs\\result background 1.gif"
         bg_img = Image.open(gif_path)
@@ -550,10 +592,10 @@ def results():
     score_display.place(relx=0.5, rely=0.38, anchor="center")
     score_display.config(highlightthickness=3)
     score_display.pack_propagate(False)
-    
     score_label = Label(score_display, text="0", font=("Impact", 38, "bold"), fg="#ffd700", bg="#0d0221")
     score_label.place(relx=0.5, rely=0.44, anchor="center")
 
+    # Animate score counting up
     def animate(i=0):
         if i <= score:
             score_label.config(text=str(i))
@@ -586,11 +628,12 @@ def results():
     record_label.image = record_photo
     record_label.place(x=0, y=0, relwidth=1, relheight=1)
 
+    # Calculate player statistics
     questions_answered = game.get('answered_questions', 0)  
     lives_remaining = game.get('lives', 0)
     missed_questions = 10 - questions_answered 
     average_time = round(sum(game['time_taken']) / len(game['time_taken']), 2) if game['time_taken'] else 0
-
+    # Display player performance stats
     stats_text = Label(record_frame, text=f"Questions Answered: {questions_answered}/10\nMissed Questions: {missed_questions}\nLives Remaining: {lives_remaining}/3\nAverage Time per Question: {average_time} sec", font=("Arial", 9, "bold"), fg="#ffffff", bg="#175E7A", justify="center")
     stats_text.place(relx=0.5, rely=0.5, anchor="center")    
 
