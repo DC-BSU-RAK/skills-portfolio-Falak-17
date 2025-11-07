@@ -172,6 +172,10 @@ def start_screen():
     exit_button.image = exit_photo
     exit_button.place(relx=0.93, rely=0.07, anchor="center")
 
+    # "Made by" Label
+    made_by_label = Label(start_frame,text="Made by-Falak Ahsan",font=("Comic Sans MS", 11, "bold"),fg="#FFAE00",bg="#382E3F")
+    made_by_label.place(relx=0.89, rely=0.98, anchor="center")
+
 
 # Menu Window
 def menu():
