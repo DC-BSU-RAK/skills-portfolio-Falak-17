@@ -5,8 +5,9 @@ import random
 import time
 import pygame 
 
+
 # Dictionary to hold all game data
-game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0}
+game = { 'level': None, 'question_num': 0, 'score': 0, 'chances': 0, 'num1': 0, 'num2': 0, 'operator': '', 'ans': 0, 'root': None, 'entry': None, 'streak': 0, 'lives': 3, 'countdown': 30, 'timer_running': False, 'time_taken': [], 'question_start_time': 0, 'answered_questions': 0, 'wrong_count': 0, 'calculator_unlocked': False}
 
 
 # Main Function
@@ -160,7 +161,7 @@ def start_screen():
         bg_label.image = instruction_photo
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instructions.png")
+        instruction_label_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\Instructions page.png")
         instruction_label_img = instruction_label_img.resize((400, 550))
         instruction_label_photo = ImageTk.PhotoImage(instruction_label_img)
         instruction_label = Label(instruction_window, image=instruction_label_photo)
@@ -247,10 +248,6 @@ def menu():
     hard_button.image = hard_img
     hard_button.pack(pady=5)
 
-    # Footer Information
-    footer = Label(main_frame, text="10 Questions • 2 Attempts • 100 Points", font=("Arial", 10), fg="#000000", bg="#3ecc17")
-    footer.place(relx=0.5, rely=0.9, anchor="center")
-
     # Exit Button 
     exit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button 1.png")
     exit_img = exit_img.resize((40, 40))
@@ -276,7 +273,24 @@ def random_nums():
 # Start the quiz 
 def start(level):
     stop_music()
-    game.update({'level': level,'question_num': 0,'score': 0,'streak': 0,'chances': 0,'lives': 3,'countdown': 30,'timer_running': False, 'time_taken': [], 'question_start_time': 0})
+    
+    # Store current calculator status
+    keep_calculator = game.get('calculator_unlocked', False)
+    
+    game.update({
+        'level': level,
+        'question_num': 0,
+        'score': 0,
+        'streak': 0,
+        'chances': 0,
+        'lives': 3,
+        'countdown': 30,
+        'timer_running': False,
+        'time_taken': [],
+        'question_start_time': 0,
+        'wrong_count': 0,
+        'calculator_unlocked': keep_calculator
+    })
 
     # Set background and time limit based on level
     if level == 1:
@@ -358,6 +372,9 @@ def show_q():
     # Timer display 
     time_widget = Label(top, text=f"⏱ {game['countdown']}s",font=('Arial', 16, 'bold'), fg='#3498db', bg='#16213e')
     time_widget.place(relx=0.29 ,rely=0.02)
+    
+    # Store time_widget in game dict so calculator can access it
+    game['time_widget'] = time_widget
     def tick_timer():
         if game['timer_running'] and game['countdown'] > 0:
             game['countdown'] -= 1
@@ -420,6 +437,32 @@ def show_q():
         streak_record = Label(f, text=f"🔥 {game['streak']} Question Streak! 🔥",font=("Arial", 12, "bold"), fg="#ff6b00", bg="#000000")
         streak_record.pack(pady=5)
 
+    # 🧮 Calculator Button (only if unlocked)
+    if game['calculator_unlocked']:
+        calc_button = Button(f, text="🧮", font=("Arial", 32),
+                            bg="#16213e", fg="#00ff88", activebackground="#0f3460",
+                            command=button_click_sound(show_calculator),
+                            cursor="hand2", width=2, height=1, bd=3, relief=RAISED)
+        calc_button.place(relx=0.055, rely=0.88, anchor="center")
+        
+        # Label to show it's unlocked
+        calc_label = Label(f, text="Calculator", font=("Arial", 9, "bold"),
+                          fg="#00ff88", bg="#121111")
+        calc_label.place(relx=0.055, rely=0.93, anchor="center")
+        
+        # Glow effect on first unlock
+        if game.get('calculator_just_unlocked', False):
+            def glow(color_index=0):
+                """Make calculator button glow when first unlocked"""
+                colors = ["#00ff88", "#00ffff", "#00cc66", "#00ffaa", "#00ff88"]
+                if color_index < 40:  # Glow 40 times (about 6 seconds)
+                    calc_button.config(fg=colors[color_index % len(colors)])
+                    game['root'].after(150, lambda: glow(color_index + 1))
+                else:
+                    calc_button.config(fg="#00ff88")  # Reset to original color
+                    game['calculator_just_unlocked'] = False  # Stop glowing
+            glow()
+
     # Quit Button
     quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button.png")
     quit_img = quit_img.resize((50, 50))
@@ -464,43 +507,179 @@ def check_ans(user):
     
     # If the answer is correct
     if user == game['ans']:
-        play_sound_effect('correct') # Play success sound
+        play_sound_effect('correct')  # Play success sound
         game['answered_questions'] += 1  # Increment answered question count
         game['time_taken'].append(round(elapsed, 2))  # Record time taken
+        
         if game['chances'] == 2:
-            game['score'] += 10 # Full points on first try
-            game['streak'] += 1 # Increase streak
+            game['score'] += 10  # Full points on first try
+            game['streak'] += 1  # Increase streak
+            
+            # 🎯 Unlock calculator on 3-streak (MOVED HERE!)
+            if game['streak'] == 3 and not game['calculator_unlocked']:
+                game['calculator_unlocked'] = True
+                game['calculator_just_unlocked'] = True
+                messagebox.showinfo(
+                    "🎉 Calculator Unlocked!", 
+                    "Amazing! 3 correct answers in a row!\n🔓 You've unlocked the Calculator!\nUse it anytime for the rest of the quiz."
+                )
         else:
-            game['score'] += 5 # Half points on second try
-            game['streak'] = 0 # Reset streak if needed
-        next_question() # Load next question
+            game['score'] += 5  # Half points on second try
+            game['streak'] = 0  # Reset streak if needed
+        
+        next_question()  # Load next question
 
     # If the answer is incorrect
     else:
-        play_sound_effect('wrong') # Play wrong sound
-        game['chances'] -= 1 # Reduce attempt count
-        game['streak'] = 0 # Reset streak
+        play_sound_effect('wrong')  # Play wrong sound
+        game['chances'] -= 1  # Reduce attempt count
+        game['streak'] = 0  # Reset streak
+        game['wrong_count'] += 1  # Track wrong answers
 
         # If user still has one more chance
         if game['chances'] > 0:
             game['timer_running'] = False
             messagebox.showwarning("Incorrect", "❌ Wrong! Try again.")
-            game['timer_running'] = True # Resume timer
-            show_q() # Reloads the question screen
+            game['timer_running'] = True  # Resume timer
+            show_q()  # Reloads the question screen
         # If both chances are used up
         else:
-            game['time_taken'].append(round(elapsed, 2)) # Record time taken
-            game['lives'] -= 1 # Lose one life
+            game['time_taken'].append(round(elapsed, 2))  # Record time taken
+            game['lives'] -= 1  # Lose one life
             # Game over if no lives left
             if game['lives'] <= 0:
                 play_music('defeat_music')
                 messagebox.showerror("Game Over", f"💀 No lives left!\nFinal Score: {game['score']}/100")
-                results() # Show results screen
+                results()  # Show results screen
                 return
             else:
                 # Show correct answer and continue by a message box
                 messagebox.showwarning("Incorrect", f"❌ Correct answer: {game['ans']}\nLives left: {game['lives']}")
                 next_question()
+
+
+def show_calculator():
+    # Pause timer before showing warning
+    was_running = game.get('timer_running', False)
+    if was_running:
+        game['timer_running'] = False
+    
+    # Warning message before using calculator
+    warning = messagebox.askyesno("⚠️ Calculator Warning","Using the calculator will consume it!\n\n""You'll need 3 consecutive correct answers to unlock it again.\n\n""Do you want to proceed?")
+    
+    if not warning:
+        if was_running:
+            game['timer_running'] = True
+            restart_timer()
+        return
+    
+    game['calculator_unlocked'] = False
+    game['streak'] = 0
+
+    # Create calculator window
+    calc_window = Toplevel(game['root'])
+    calc_window.title("🧮 Calculator")
+    calc_window.geometry("400x450")
+    calc_window.resizable(False, False)
+    calc_window.configure(bg="#1a1a2e")
+
+    def on_close():
+        calc_window.destroy()
+        if was_running:
+            game['timer_running'] = True
+            restart_timer()
+    
+    calc_window.protocol("WM_DELETE_WINDOW", on_close)
+
+    # Display entry
+    display = Entry(calc_window, font=("Arial", 24, "bold"), justify="right", bg="#16213e", fg="white", bd=5, relief=SUNKEN)
+    display.grid(row=0, column=0, columnspan=4, padx=10, pady=20, sticky="ew")
+
+    calc = {"current": "", "operator": None, "prev": 0}
+
+    def button_click(value):
+        calc["current"] += str(value)
+        display.delete(0, END)
+        display.insert(0, calc["current"])
+
+    def clear():
+        calc["current"] = ""
+        calc["operator"] = None
+        calc["prev"] = 0
+        display.delete(0, END)
+
+    def calculate():
+        try:
+            if calc["operator"] and calc["current"]:
+                num = float(calc["current"])
+                result = calc["prev"] + num if calc["operator"] == "+" else calc["prev"] - num
+                display.delete(0, END)
+                display.insert(0, str(int(result) if result == int(result) else result))
+                calc["current"] = str(result)
+                calc["operator"] = None
+        except Exception:
+            display.delete(0, END)
+            display.insert(0, "Error")
+
+    def set_operator(op):
+        if calc["current"]:
+            calc["prev"] = float(calc["current"])
+            calc["operator"] = op
+            calc["current"] = ""
+            display.delete(0, END)
+
+    # Create calculator buttons
+    buttons = [
+        ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('-', 1, 3),
+        ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('+', 2, 3),
+        ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('.', 3, 3),
+        ('0', 4, 0), ('=', 4, 3)]
+
+    for (text, row, col) in buttons:
+        if text == '=':
+            button_command = calculate
+        elif text == '+':
+            button_command = lambda op='+': set_operator(op)
+        elif text == '-':
+            button_command = lambda op='-': set_operator(op)
+        else:
+            button_command = lambda value=text: button_click(value)
+
+        btn = Button(calc_window, text=text, font=("Arial", 18, "bold"), bg="#0f3460", fg="white",activebackground="#16213e", command=button_command, cursor="hand2", width=5, height=2)
+        btn.grid(row=row, column=col, padx=5, pady=5)
+
+    # Clear button
+    clear_btn = Button(calc_window, text="C", font=("Arial", 18, "bold"), bg="#e94560", fg="white",activebackground="#c23350", command=clear, cursor="hand2", width=5, height=2)
+    clear_btn.grid(row=5, column=0, columnspan=4, padx=5, pady=5, sticky="ew")
+
+    # Close button
+    close_btn = Button(calc_window, text="Close & Resume", font=("Arial", 14, "bold"), bg="#1a1a2e", fg="#00ff88", activebackground="#0f3460", command=on_close, cursor="hand2",width=15, height=1, bd=2, relief=RAISED)
+    close_btn.grid(row=6, column=0, columnspan=4, padx=5, pady=10, sticky="ew")
+
+    # Pause label
+    pause_label = Label(calc_window, text="⏸️ Timer Paused", font=("Arial", 10, "bold"), fg="#ffaa00", bg="#1a1a2e")
+    pause_label.grid(row=7, column=0, columnspan=4, pady=5)
+
+
+def restart_timer():
+    def tick_timer():
+        if game['timer_running'] and game['countdown'] > 0:
+            game['countdown'] -= 1
+            if 'time_widget' in game and game['time_widget'].winfo_exists():
+                game['time_widget'].config(text=f"⏱ {game['countdown']}s")
+            game['root'].after(1000, tick_timer)
+        elif game['countdown'] <= 0 and game['timer_running']:
+            game['timer_running'] = False
+            elapsed = time.time() - game['question_start_time']
+            game['time_taken'].append(round(elapsed, 2))
+            game['lives'] -= 1
+            if game['lives'] <= 0:
+                messagebox.showerror("Time's Up!", f"⏰ Time ran out!\n💀 No lives left!\nFinal Score: {game['score']}/100")
+                results()
+            else:
+                messagebox.showwarning("Time's Up!", f"⏰ Time ran out!\nCorrect answer: {game['ans']}\n💔 You lost one life.\nLives left: {game['lives']}")
+                next_question()
+    tick_timer()
 
 
 # Display the results screen
@@ -630,12 +809,13 @@ def results():
 
     # Calculate player statistics
     questions_answered = game.get('answered_questions', 0)  
-    lives_remaining = game.get('lives', 0)
     missed_questions = 10 - questions_answered 
+    wrong_answers = game.get('wrong_count', 0)
     average_time = round(sum(game['time_taken']) / len(game['time_taken']), 2) if game['time_taken'] else 0
+    
     # Display player performance stats
-    stats_text = Label(record_frame, text=f"Questions Answered: {questions_answered}/10\nMissed Questions: {missed_questions}\nLives Remaining: {lives_remaining}/3\nAverage Time per Question: {average_time} sec", font=("Arial", 9, "bold"), fg="#ffffff", bg="#175E7A", justify="center")
-    stats_text.place(relx=0.5, rely=0.5, anchor="center")    
+    stats_text = Label(record_frame, text=f"Missed Questions: {missed_questions}\nWrong Answers: {wrong_answers}\nAverage Time: {average_time} sec", font=("Arial", 11, "bold"), fg="#ffffff", bg="#175E7A", justify="center")
+    stats_text.place(relx=0.5, rely=0.5, anchor="center")  
 
     # Play Again Button
     play_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\play again button.png").resize((70, 70))
@@ -650,5 +830,6 @@ def results():
     quit_button = Button(f, image=quit_photo, bg="black", activebackground="black", borderwidth=0, highlightthickness=0, cursor="hand2", command=button_click_sound(game['root'].quit))
     quit_button.image = quit_photo
     quit_button.place(relx=0.57, rely=0.93, anchor="center")
+
 
 main()
