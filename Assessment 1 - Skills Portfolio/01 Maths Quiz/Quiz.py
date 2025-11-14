@@ -185,7 +185,7 @@ def start_screen():
     exit_button.place(relx=0.93, rely=0.07, anchor="center")
 
     # Name Label
-    made_by_label = Label(start_frame,text="Made by-Falak Ahsan",font=("Comic Sans MS", 11, "bold"),fg="#FFAE00",bg="#382E3F")
+    made_by_label = Label(start_frame,text="Credit - Falak Ahsan",font=("Comic Sans MS", 10, "bold"),fg="#FFAE00",bg="#382E3F")
     made_by_label.place(relx=0.89, rely=0.98, anchor="center")
 
 
@@ -437,31 +437,23 @@ def show_q():
         streak_record = Label(f, text=f"🔥 {game['streak']} Question Streak! 🔥",font=("Arial", 12, "bold"), fg="#ff6b00", bg="#000000")
         streak_record.pack(pady=5)
 
-    # 🧮 Calculator Button (only if unlocked)
     if game['calculator_unlocked']:
-        calc_button = Button(f, text="🧮", font=("Arial", 32),
-                            bg="#16213e", fg="#00ff88", activebackground="#0f3460",
-                            command=button_click_sound(show_calculator),
-                            cursor="hand2", width=2, height=1, bd=3, relief=RAISED)
-        calc_button.place(relx=0.055, rely=0.88, anchor="center")
-        
-        # Label to show it's unlocked
-        calc_label = Label(f, text="Calculator", font=("Arial", 9, "bold"),
-                          fg="#00ff88", bg="#121111")
-        calc_label.place(relx=0.055, rely=0.93, anchor="center")
-        
-        # Glow effect on first unlock
-        if game.get('calculator_just_unlocked', False):
-            def glow(color_index=0):
-                """Make calculator button glow when first unlocked"""
-                colors = ["#00ff88", "#00ffff", "#00cc66", "#00ffaa", "#00ff88"]
-                if color_index < 40:  # Glow 40 times (about 6 seconds)
-                    calc_button.config(fg=colors[color_index % len(colors)])
-                    game['root'].after(150, lambda: glow(color_index + 1))
-                else:
-                    calc_button.config(fg="#00ff88")  # Reset to original color
-                    game['calculator_just_unlocked'] = False  # Stop glowing
-            glow()
+        calculator = Frame(f, bg="#16213e", relief=SOLID, bd=2) 
+        calculator.place(relx=0.065, rely=0.09, anchor="center") 
+        calc_button = Button(calculator, text="💡", font=("Arial", 24),bg="#16213e", fg="#00ff88", activebackground="#0f3460",command=button_click_sound(show_calculator),cursor="hand2", relief=FLAT, bd=0)
+        calc_button.pack(padx=2, pady=2) 
+
+    # Glow effect on first unlock
+    if game.get('calculator_just_unlocked', False):
+        def glow(color_index=0):
+            colors = ["#00ff88", "#00ffff", "#00cc66", "#00ffaa", "#00ff88"]
+            if color_index < 40:  # Glow 40 times (about 6 seconds)
+                calc_button.config(fg=colors[color_index % len(colors)])
+                game['root'].after(150, lambda: glow(color_index + 1))
+            else:
+                calc_button.config(fg="#00ff88")
+                game['calculator_just_unlocked'] = False  
+        glow()
 
     # Quit Button
     quit_img = Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\01 Maths Quiz\\Images\\quit button.png")
@@ -501,6 +493,7 @@ def check():
         game['entry'].delete(0, END) # Clear the entry field
  
 
+# Check Answers
 def check_ans(user):
     # Calculate time taken for current question
     elapsed = time.time() - game['question_start_time'] 
@@ -515,14 +508,10 @@ def check_ans(user):
             game['score'] += 10  # Full points on first try
             game['streak'] += 1  # Increase streak
             
-            # 🎯 Unlock calculator on 3-streak (MOVED HERE!)
             if game['streak'] == 3 and not game['calculator_unlocked']:
                 game['calculator_unlocked'] = True
                 game['calculator_just_unlocked'] = True
-                messagebox.showinfo(
-                    "🎉 Calculator Unlocked!", 
-                    "Amazing! 3 correct answers in a row!\n🔓 You've unlocked the Calculator!\nUse it anytime for the rest of the quiz."
-                )
+                messagebox.showinfo("🎉 Calculator Unlocked!","Amazing! 3 correct answers in a row!\n🔓 You've unlocked the Calculator!\nUse it anytime for the rest of the quiz.")
         else:
             game['score'] += 5  # Half points on second try
             game['streak'] = 0  # Reset streak if needed
@@ -558,6 +547,7 @@ def check_ans(user):
                 next_question()
 
 
+# Calculator 
 def show_calculator():
     # Pause timer before showing warning
     was_running = game.get('timer_running', False)
@@ -573,16 +563,18 @@ def show_calculator():
             restart_timer()
         return
     
+    # Lock calculator and reset streak
     game['calculator_unlocked'] = False
     game['streak'] = 0
 
-    # Create calculator window
+    # Create calculator window with modern styling
     calc_window = Toplevel(game['root'])
-    calc_window.title("🧮 Calculator")
+    calc_window.title("🧮 Monster Calculator")
     calc_window.geometry("400x450")
     calc_window.resizable(False, False)
-    calc_window.configure(bg="#1a1a2e")
+    calc_window.config(bg="black")
 
+    # Handle closing calculator window
     def on_close():
         calc_window.destroy()
         if was_running:
@@ -591,23 +583,49 @@ def show_calculator():
     
     calc_window.protocol("WM_DELETE_WINDOW", on_close)
 
-    # Display entry
-    display = Entry(calc_window, font=("Arial", 24, "bold"), justify="right", bg="#16213e", fg="white", bd=5, relief=SUNKEN)
-    display.grid(row=0, column=0, columnspan=4, padx=10, pady=20, sticky="ew")
+    # Header Frame
+    header = Frame(calc_window, bg="#0a0a0a", height=50)
+    header.pack(fill=X, pady=(10, 0))
+    
+    title_label = Label(header, text="🧮 CALCULATOR",font=("Arial", 14, "bold"),fg="#00ff88", bg="#0a0a0a")
+    title_label.pack()
 
+    # Display Frame with glow effect
+    display_frame = Frame(calc_window, bg="#0a0a0a")
+    display_frame.pack(pady=20, padx=20)
+    
+    # Glowing border frame
+    glow_frame = Frame(display_frame, bg="#669f85", bd=0)
+    glow_frame.pack(padx=2, pady=2)
+    
+    # Calculator display entry
+    display = Entry(glow_frame, font=("DS-Digital", 32, "bold"),justify="right", bg="#1a1a2e", fg="#00ff88",bd=10, relief=FLAT, insertbackground="#00ff88",readonlybackground="#1a1a2e")
+    display.pack(ipady=15, ipadx=10)
+    display.insert(0, "0")
+
+    # Internal calculator state
     calc = {"current": "", "operator": None, "prev": 0}
 
+    # Handle number button clicks
     def button_click(value):
-        calc["current"] += str(value)
-        display.delete(0, END)
-        display.insert(0, calc["current"])
+        if calc["current"] == "" or display.get() == "0":
+            calc["current"] = str(value)
+            display.delete(0, END)
+            display.insert(0, calc["current"])
+        else:
+            calc["current"] += str(value)
+            display.delete(0, END)
+            display.insert(0, calc["current"])
 
+    # Clear calculator state and display
     def clear():
         calc["current"] = ""
         calc["operator"] = None
         calc["prev"] = 0
         display.delete(0, END)
+        display.insert(0, "0")
 
+    # Perform calculation
     def calculate():
         try:
             if calc["operator"] and calc["current"]:
@@ -621,6 +639,7 @@ def show_calculator():
             display.delete(0, END)
             display.insert(0, "Error")
 
+    # Set current operator (+ or -)
     def set_operator(op):
         if calc["current"]:
             calc["prev"] = float(calc["current"])
@@ -628,14 +647,24 @@ def show_calculator():
             calc["current"] = ""
             display.delete(0, END)
 
-    # Create calculator buttons
-    buttons = [
-        ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('-', 1, 3),
-        ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('+', 2, 3),
-        ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('.', 3, 3),
-        ('0', 4, 0), ('=', 4, 3)]
+    # Buttons Frame
+    buttons_frame = Frame(calc_window, bg="#0a0a0a")
+    buttons_frame.pack(pady=10, padx=20)
 
-    for (text, row, col) in buttons:
+    # Button styles
+    number_style = {"font": ("Arial", 18, "bold"),"bg": "#372d3a","fg": "white","activebackground": "#07073A","activeforeground": "white","cursor": "hand2","width": 5,"height": 2,"bd": 0,"relief": FLAT }
+    operator_style = {"font": ("Arial", 18, "bold"),"bg": "#f06f40","fg": "white","activebackground": "#8b2c07","activeforeground": "white","cursor": "hand2","width": 5,"height": 2,"bd": 0,"relief": FLAT}
+    equals_style = {"font": ("Arial", 18, "bold"),"bg": "#07532f","fg": "#0a0a0a","activebackground": "#125a36","activeforeground": "#0a0a0a","cursor": "hand2","width": 5,"height": 2,"bd": 0,"relief": FLAT}
+
+    # Calculator buttons and layout
+    buttons = [
+        ('7', 1, 0, number_style), ('8', 1, 1, number_style), ('9', 1, 2, number_style), ('-', 1, 3, operator_style),
+        ('4', 2, 0, number_style), ('5', 2, 1, number_style), ('6', 2, 2, number_style), ('+', 2, 3, operator_style),
+        ('1', 3, 0, number_style), ('2', 3, 1, number_style), ('3', 3, 2, number_style), ('.', 3, 3, number_style),
+        ('0', 4, 0, number_style), ('=', 4, 3, equals_style)]
+
+    # Create each button
+    for (text, row, col, style) in buttons:
         if text == '=':
             button_command = calculate
         elif text == '+':
@@ -645,22 +674,39 @@ def show_calculator():
         else:
             button_command = lambda value=text: button_click(value)
 
-        btn = Button(calc_window, text=text, font=("Arial", 18, "bold"), bg="#0f3460", fg="white",activebackground="#16213e", command=button_command, cursor="hand2", width=5, height=2)
-        btn.grid(row=row, column=col, padx=5, pady=5)
+        btn = Button(buttons_frame, text=text, command=button_command, **style)
+        btn.grid(row=row, column=col, padx=4, pady=4, sticky="nsew")
+        
+        # Hover effects
+        original_bg = style["bg"]
+        hover_bg = style["activebackground"]
+        btn.bind("<Enter>", lambda e, b=btn, c=hover_bg: b.config(bg=c))
+        btn.bind("<Leave>", lambda e, b=btn, c=original_bg: b.config(bg=c))
+
+    # Make button grid responsive
+    for i in range(4):
+        buttons_frame.grid_columnconfigure(i, weight=1)
+    for i in range(1, 5):
+        buttons_frame.grid_rowconfigure(i, weight=1)
 
     # Clear button
-    clear_btn = Button(calc_window, text="C", font=("Arial", 18, "bold"), bg="#e94560", fg="white",activebackground="#c23350", command=clear, cursor="hand2", width=5, height=2)
-    clear_btn.grid(row=5, column=0, columnspan=4, padx=5, pady=5, sticky="ew")
+    clear_btn = Button(buttons_frame, text="CLEAR",font=("Arial", 15, "bold"),bg="#e63946", fg="white",activebackground="#ff4757",activeforeground="white",command=clear, cursor="hand2",width=15, height=2, bd=0, relief=FLAT)
+    clear_btn.grid(row=4, column=1, columnspan=2, padx=4, pady=4, sticky="ew")
+    
+    # Hover for clear button
+    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#AA222D"))
+    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#640E16"))
 
-    # Close button
-    close_btn = Button(calc_window, text="Close & Resume", font=("Arial", 14, "bold"), bg="#1a1a2e", fg="#00ff88", activebackground="#0f3460", command=on_close, cursor="hand2",width=15, height=1, bd=2, relief=RAISED)
-    close_btn.grid(row=6, column=0, columnspan=4, padx=5, pady=10, sticky="ew")
+    # Bottom section
+    bottom_frame = Frame(calc_window, bg="#0a0a0a")
+    bottom_frame.pack(fill=X, pady=(15, 10), padx=20)
 
-    # Pause label
-    pause_label = Label(calc_window, text="⏸️ Timer Paused", font=("Arial", 10, "bold"), fg="#ffaa00", bg="#1a1a2e")
-    pause_label.grid(row=7, column=0, columnspan=4, pady=5)
+    # Small monster icon
+    monster_label = Label(bottom_frame, text="👾")
+    monster_label.pack(pady=5)
 
 
+# Restart countdown timer after the calculator hint is used
 def restart_timer():
     def tick_timer():
         if game['timer_running'] and game['countdown'] > 0:
