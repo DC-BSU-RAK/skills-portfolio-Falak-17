@@ -20,10 +20,9 @@ def setup_audio():
     # Dictionary containing all sound file paths
     sound_files = {
         'background_music': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\background.wav',
-        'tell_joke': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\tell joke.wav',
+        'click_sound': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\click.wav',
         'next_joke': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\next joke.wav',
-        'punchline': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\punchline.wav',
-        'quit_sound': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\quit.wav'}
+        'punchline': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\punchline.wav'}
     
     for sound_name, sound_path in sound_files.items():
         try:
@@ -162,7 +161,7 @@ button_height = 70
 tell_btn_img = ImageTk.PhotoImage(Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\02 Alexa Tell a Joke\\Images\\button 1.png").resize((button_width, button_height)))
 tell_btn_frame = Frame(bg_label, bg="#6200FF", bd=3, relief=RAISED)
 tell_btn_frame.place(relx=0.35, rely=0.72, anchor="center")
-tell_btn = Button(tell_btn_frame, image=tell_btn_img, command=button_click_sound(tell_joke, 'tell_joke'), borderwidth=0, cursor="hand2", bg="#6200FF", activebackground="#6200FF")
+tell_btn = Button(tell_btn_frame, image=tell_btn_img, command=button_click_sound(tell_joke, 'click_sound'), borderwidth=0, cursor="hand2", bg="#6200FF", activebackground="#6200FF")
 tell_btn.image = tell_btn_img
 tell_btn.pack()
 tell_btn.bind("<Enter>", lambda e: tell_btn.config(bg="#2B0A70")) 
@@ -192,7 +191,7 @@ next_btn.bind("<Leave>", lambda e: next_btn.config(bg="#D6CA1D"))
 quit_btn_img = ImageTk.PhotoImage(Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\02 Alexa Tell a Joke\\Images\\button 4.png").resize((button_width, button_height)))
 quit_btn_frame = Frame(bg_label, bg="#FF3E3E", bd=3, relief=RAISED)
 quit_btn_frame.place(relx=0.65, rely=0.86, anchor="center")
-quit_btn = Button(quit_btn_frame, image=quit_btn_img, command=button_click_sound(quit_app, 'quit_sound'), borderwidth=0, cursor="hand2", bg="#FF3E3E", activebackground="#FF3E3E")
+quit_btn = Button(quit_btn_frame, image=quit_btn_img, command=button_click_sound(quit_app, 'click_sound'), borderwidth=0, cursor="hand2", bg="#FF3E3E", activebackground="#FF3E3E")
 quit_btn.image = quit_btn_img
 quit_btn.pack()
 quit_btn.bind("<Enter>", lambda e: quit_btn.config(bg="#530404"))
