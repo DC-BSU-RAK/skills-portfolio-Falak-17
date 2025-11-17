@@ -28,17 +28,12 @@ def setup_audio():
         'punchline': r'C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\Audios\punchline.wav'}
     
     for sound_name, sound_path in sound_files.items():
-        try:
-            if 'music' in sound_name:
-                sounds[sound_name] = sound_path
-                print(f"✅ Loaded music path: {sound_name}")
-            else:
-                sounds[sound_name] = pygame.mixer.Sound(sound_path)
-                print(f"✅ Loaded sound: {sound_name}")
-        except FileNotFoundError:
-            print(f"⚠️ Warning: Sound not found: {sound_path}")
-        except Exception as e:
-            print(f"❌ Error loading {sound_name}: {e}")
+        if 'music' in sound_name:
+            sounds[sound_name] = sound_path
+            print(f"✅ Loaded music path: {sound_name}")
+        else:
+            sounds[sound_name] = pygame.mixer.Sound(sound_path)
+            print(f"✅ Loaded sound: {sound_name}")
 
 
 # Wrapper to add a sound effect whenever a button is clicked
@@ -81,7 +76,7 @@ def play_sound_effect(sound_name):
 setup_audio()
 play_background_music()
 
-# A frame for the start screen
+# Main frame
 main_frame = Frame(root)
 main_frame.pack(fill=BOTH, expand=True)
 
@@ -166,7 +161,7 @@ def quit_app():
         stop_music()
         root.destroy()
 
-# Button frames and buttons with enhanced styling
+# Button size
 button_width = 220
 button_height = 70
 
