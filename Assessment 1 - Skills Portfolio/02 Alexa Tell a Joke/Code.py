@@ -12,6 +12,9 @@ root.resizable(FALSE, FALSE)
 # Dictionary to hold all sounds
 sounds = {}
 
+# State variable to track if first joke has been told
+first_joke = [False]
+
 # Audio Setup
 def setup_audio():
     pygame.mixer.init()
@@ -48,17 +51,14 @@ def button_click_sound(command, sound_name):
 
 # Play Background Music
 def play_background_music():
-    try:
-        music_path = sounds.get('background_music')
-        if music_path:
-            pygame.mixer.music.load(music_path)
-            pygame.mixer.music.set_volume(0.3)
-            pygame.mixer.music.play(-1)
-            print(f"✅ Playing background music")
-        else:
-            print(f"❌ Background music file not found")
-    except Exception as e:
-        print(f"❌ Error playing background music: {e}")
+    music_path = sounds.get('background_music')
+    if music_path:
+        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
+        print(f"✅ Playing background music")
+    else:
+        print(f"❌ Background music file not found")
 
 
 # Stop Music
@@ -109,7 +109,7 @@ for l in lines:
 
 current_index = [0]
 
-# Enhanced Title with shadow effect
+# Title Frame
 title_frame = Frame(main_frame, bg="white", bd=1, relief=RIDGE)
 title_frame.place(relx=0.5, rely=0.26, anchor="center")
 
@@ -126,26 +126,39 @@ def animate_title(index=0):
     root.after(40, animate_title, (index + 1) % len(title_frames))
 animate_title(0)
 
-# Enhanced joke display area with rounded look
+# Joke display area with rounded look
 joke_display_frame = Frame(main_frame, bg="#000000", bd=3, relief=GROOVE)
 joke_display_frame.place(relx=0.5, rely=0.41, anchor="n", width=500, height=150)
-setup_label = Label(joke_display_frame, text="",wraplength=450,font=("Arial", 16, "bold"),fg="#ffffff", bg="#000000", pady=15)
-setup_label.pack(expand=True)
+joke_label = Label(joke_display_frame, text="",wraplength=450,font=("Arial", 16, "bold"),fg="#ffffff", bg="#000000", pady=15)
+joke_label.pack(expand=True)
 punchline_label = Label(joke_display_frame, text="",wraplength=450,font=("Arial", 16, "bold"),fg="#2847af", bg="#000000", pady=10)
 punchline_label.pack(expand=True)
 
 # Functions
 def tell_joke():
+    if first_joke[0]:
+        messagebox.showinfo("Use Next Joke", "Please use the 'Next Joke' button to see more jokes!")
+        return
     if setups:
         current_index[0] = random.randint(0, len(setups) - 1)
-        setup_label.config(text=setups[current_index[0]], font=("Arial", 18, "bold"))
+        joke_label.config(text=setups[current_index[0]], font=("Arial", 18, "bold"))
         punchline_label.config(text="")
+        first_joke[0] = True
 
 def show_punchline():
-    if setup_label.cget("text") == "":  # Check if joke has been told
+    if joke_label["text"] == "":
         messagebox.showwarning("Wait!", "Please press 'Alexa Tell Me a Joke' button first!")
     elif punchlines:
         punchline_label.config(text=punchlines[current_index[0]])
+
+def next_joke():
+    if not first_joke[0]:
+        messagebox.showinfo("Start First", "Please click 'Alexa Tell Me a Joke' button first!")
+        return
+    if setups:
+        current_index[0] = random.randint(0, len(setups) - 1)
+        joke_label.config(text=setups[current_index[0]], font=("Arial", 18, "bold"))
+        punchline_label.config(text="")
 
 def quit_app():
     result = messagebox.askyesno("Quit", "Are you sure you want to quit?")
@@ -181,7 +194,7 @@ punchline_btn.bind("<Leave>", lambda e: punchline_btn.config(bg="#2AAB1E"))
 next_btn_img = ImageTk.PhotoImage(Image.open("C:\\Users\\User\\Documents\\CYBER Y2\\Semester 3\\Code Lab II\\skills-portfolio-Falak-17\\Assessment 1 - Skills Portfolio\\02 Alexa Tell a Joke\\Images\\button 3.png").resize((button_width, button_height)))
 next_btn_frame = Frame(bg_label, bg="#FFF454", bd=3, relief=RAISED)
 next_btn_frame.place(relx=0.35, rely=0.86, anchor="center")
-next_btn = Button(next_btn_frame, image=next_btn_img, command=button_click_sound(tell_joke, 'next_joke'), borderwidth=0, cursor="hand2", bg="#FFF454", activebackground="#FFF454")
+next_btn = Button(next_btn_frame, image=next_btn_img, command=button_click_sound(next_joke, 'next_joke'), borderwidth=0, cursor="hand2", bg="#FFF454", activebackground="#FFF454")
 next_btn.image = next_btn_img
 next_btn.pack()
 next_btn.bind("<Enter>", lambda e: next_btn.config(bg="#636307")) 
