@@ -93,7 +93,7 @@ setups = []
 punchlines = []
 
 # Reading jokes from file
-with open("randomJokes.txt") as file_handler:
+with open(r"C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\02 Alexa Tell a Joke\randomJokes.txt") as file_handler:
     lines = file_handler.readlines()
 
 for l in lines:
