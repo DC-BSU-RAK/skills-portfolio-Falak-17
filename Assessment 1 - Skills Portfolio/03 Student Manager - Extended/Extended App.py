@@ -883,7 +883,7 @@ def show_lowest_score():
 # Save new student's data
 def save_data_to_file():
     try:
-        with open(r"C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\03 Student Manager Extended\studentMarks.txt", "w") as file_handler:
+        with open(r"C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\03 Student Manager - Extended\studentMarks.txt", "w") as file_handler:
             # Write number of students
             file_handler.write(f"{len(student_code)}\n")
             
