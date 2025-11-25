@@ -169,7 +169,7 @@ def update_performance_display():
 
 # Function to load data from file
 def load_data():
-    with open(r"C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\03 Student Manager Extended\studentMarks.txt") as file_handler:
+    with open(r"C:\Users\User\Documents\CYBER Y2\Semester 3\Code Lab II\skills-portfolio-Falak-17\Assessment 1 - Skills Portfolio\03 Student Manager - Extended\studentMarks.txt") as file_handler:
         lines = file_handler.readlines()
         
     # Clear existing data
